@@ -1,7 +1,7 @@
 package iflab.test;
 
 import iflab.model.Student;
-import dao.StudentDAO;
+import iflab.myinterface.StudentDAO;
 import android.Manifest.permission;
 import android.content.Context;
 import android.text.style.ForegroundColorSpan;

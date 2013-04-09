@@ -1,4 +1,4 @@
-package dao;
+package iflab.myinterface;
 
 import java.sql.Date;
 import java.sql.Time;

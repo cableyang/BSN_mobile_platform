@@ -1,9 +1,13 @@
 package iflab.test;
 
-import httpservice.HttpECGservice;
+import httpservice.HttpService;
 import iflab.model.ECG;
 import iflab.model.Student;
 import iflab.model.elder;
+import iflab.myinterface.EcgDAO;
+import iflab.myinterface.ElderDAO;
+import iflab.myinterface.HttpECGservice;
+import iflab.myinterface.StudentDAO;
 import iflab.test.R.id;
 
 import java.io.IOException;
@@ -30,9 +34,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import dao.EcgDAO;
-import dao.ElderDAO;
-import dao.StudentDAO;
 
 
 import android.R.integer;
@@ -135,12 +136,12 @@ public class firstActivity extends Activity
 	    graphicsPluseData = new GraphicsData(RATE500);
 	    String urlString="http://223.3.61.67/ecg2mysql.php";
 	    //数据库写入
-	     for(int i=1; i<1000; i++)
+	     for(int i=1; i<10; i++)
 	    {
    
-	    	 ECG ecg=new ECG(1, "杨华", null, null, graphicsECGData.data[499], 0);
+	    //	 ECG ecg=new ECG(1, "杨华", null, null, graphicsECGData.data[499], 0);
 			 //	ecgDAO.add(ecg);
-			 httpECGservice.set2mysql(ecg);
+			// httpECGservice.set2mysql(ecg);
 	    	 
 	    	 //ECG ecg=new ECG(1, "cc", null, null, graphicsECGData.data[499], 0);
 			 //	ecgDAO.add(ecg);
@@ -153,6 +154,17 @@ public class firstActivity extends Activity
 	    	 	 elderDAO.addelder(elder);
 	    	*/
 	    }  
+	     
+	     final Intent intent=new Intent();	
+	     intent.setAction("httpservice.HttpService");
+	     try
+		{
+			//intent.setAction("httpserivce.HttpService");
+	       // startService(intent);
+		} catch (Exception e)
+		{
+			// TODO: handle exception
+		}
 	     
 	    double []p= new double [500];
 	    for (int i = 0; i < RATE500; i++)
@@ -184,9 +196,7 @@ public class firstActivity extends Activity
 	    
 	    BluetoothCheck(); //check that device
 	     
-	     
-	   
-	    
+	       
 	    drhandler = new Handler() 
 		{
                
