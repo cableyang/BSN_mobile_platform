@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LL"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/ECG_SINGAL"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_weight="0.05"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Pluse"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_weight="0.03"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tool_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="55.0dip"
+        android:layout_gravity="bottom"
+        android:background="@drawable/tool_bar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/bluestart"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebutton_background"
+            android:drawableTop="@drawable/toolbar_shop_fav"
+            android:paddingTop="10.0dip"
+            android:text="启动蓝牙"
+            android:textColor="#ffffffff"
+            android:textSize="10.0sp" />
+
+        <Button
+            android:id="@+id/shop_checkin"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebutton_background"
+            android:drawableTop="@drawable/toolbar_shop_checkin"
+            android:paddingTop="10.0dip"
+            android:text="数据上传"
+            android:textColor="#ffffffff"
+            android:textSize="10.0sp" />
+
+        <Button
+            android:id="@+id/upload_photo"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebutton_background"
+            android:drawableTop="@drawable/toolbar_upload_photo"
+            android:paddingTop="10.0dip"
+            android:text="远程监控"
+            android:textColor="#ffffffff"
+            android:textSize="10.0sp" />
+
+        <Button
+            android:id="@+id/feedback"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebutton_background"
+            android:drawableTop="@drawable/toolbar_feedback"
+            android:paddingTop="10.0dip"
+            android:text="数据分析"
+            android:textColor="#ffffffff"
+            android:textSize="10.0sp" />
+
+        <Button
+            android:id="@+id/more"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/imagebutton_background"
+            android:drawableTop="@drawable/toolbar_more"
+            android:paddingTop="10.0dip"
+            android:text=""
+            android:textColor="#ffffffff"
+            android:textSize="10.0sp" />
+    </LinearLayout>
+
+</LinearLayout>

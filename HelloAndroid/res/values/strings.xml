@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, firstActivity!</string>
+    <string name="app_name">BSN PLATFORM</string>
+    <string name="btn1">启动Service监听器</string>
+    <string name="tv1">Service演示</string>
+    <string name="CB1">馒头</string>
+    <string name="CB2">面条</string>
+    <string name="CB3">米饭</string>
+    <string name="CB4">汉堡</string>
+    <string name="prompt">请选择您的国籍</string>
+    <string name="btn2">停止Service监听器</string>
+    <string name="tv2">Service方法调用过程</string>
+    <string name="tv3">用户名</string>
+    <string name="tv4">密码</string>
+    <string name="btn3">绑定Service监听器</string>
+    <string name="btn4">解除绑定Service监听器</string>
+    
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="sm">仿真</string>
+    <string name="hd">硬件</string>
+    <string name="st">开始</string>
+    <string name="cn">连接</string>
+    <string name="aq">采集</string>
+    <string name="qt">退出</string>
+    <string name="cancel">取消</string>
+    <string name="find_dev">查找设备</string>
+    <string name="unmatch">未连接设备</string>
+    <string name="savename">保存文件名</string>
+</resources>
