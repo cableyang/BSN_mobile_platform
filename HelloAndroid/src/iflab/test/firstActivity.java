@@ -33,6 +33,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+ 
 
 
 
@@ -155,11 +156,12 @@ public class firstActivity extends Activity
 	    	*/
 	    }  
 	     
-	     final Intent intent=new Intent();	
-	     intent.setAction("httpservice.HttpService");
+	    
 	     try
 		{
-			//intent.setAction("httpserivce.HttpService");
+	    	 Intent intent=new Intent(firstActivity.this, HttpService.class);
+	        startService(intent);
+		 	//intent.setAction("httpserivce.HttpService");
 	       // startService(intent);
 		} catch (Exception e)
 		{
@@ -220,8 +222,7 @@ public class firstActivity extends Activity
 					graphicsECGData.dealwithstring(transimitString);
 					firstmessage=secondmessage;
  	                
-				    ECG ecg=new ECG(1, "Ñî»ª", null, null, graphicsECGData.data[499], 0);
-				 //	ecgDAO.add(ecg);
+				    ECG ecg=new ECG(1, "Ñî»ª", null, null, graphicsECGData.data[499], 0); 
 				    httpECGservice.set2mysql(ecg);
 					
 					} catch (IOException e)

@@ -32,8 +32,18 @@ public class HttpService extends Service
 		{
 			// TODO Auto-generated method stub
              //working service
-		    Log.i("handler", "handler is working");
-			 stopSelf(msg.arg1); 
+			while(true)
+			{
+				Log.i("handler", "handler is working");
+				try
+				{
+					Thread.sleep(500);
+				} catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} 
 		}	    
 	}
 	
