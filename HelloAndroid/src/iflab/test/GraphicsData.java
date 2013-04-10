@@ -65,7 +65,7 @@ public class GraphicsData
   */
  public void dealwithstring(String string)
 {
-	 
+	 final int size=300;
 	 int index1=0;
 	 int index2=0;
 	 int pack=(int)string.length()/((14*6+4*2));
@@ -133,7 +133,7 @@ public class GraphicsData
 				 {
 					 temp=(~temp+1)&0x7fffff;
 				 }
-				 adddata(300-300*temp/value);
+				 adddata(size-size*temp/value);
 			}
 		}
 		 
@@ -151,7 +151,7 @@ public class GraphicsData
 				 {
 					 temp=(~temp+1)&0x7fffff;
 				 }
-				 adddata(300-300*temp/value);
+				 adddata(size-size*temp/value);
 				} catch (Exception e)
 				{
 					// TODO: handle exception
@@ -180,7 +180,7 @@ public class GraphicsData
 				 {
 					 temp=(~temp+1)&0x7fffff;
 				 } 
-				 adddata(300-300*temp/value);
+				 adddata(size-size*temp/value);
 				 
 				}
 				 
@@ -207,24 +207,7 @@ public class GraphicsData
 		{
 			// TODO: handle exception
 		}
-		 /*
-		 if (left>10)
-		{
-			for (int i = 0; i < left/6; i++)
-			{
-				 
-					int temp = Integer.parseInt(string.substring(lastindex+4+i*6, lastindex+4+5+1+i*6),16);
-					if(temp>0x7fffff)//表明为负数
-					 {
-						 temp=(~temp+1)&0x7fffff;
-					 }
-					 adddata(250-250*temp/value);
-				
-			}
-		} 
-		
 	
-	 } */
 		 
 	 }
 	
