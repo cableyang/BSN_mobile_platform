@@ -174,7 +174,7 @@ public class GraphicsData
 				{ 
 				 for (int i = 0; i < (index2-1)/6; i++)
 				{
-			     int temp = Integer.parseInt(string.substring(string.length()-index2+i*6+1, string.length()+1-index2+5+i*6),16);
+			     int temp = Integer.parseInt(string.substring(string.length()-index2+i*6+1, string.length()+2-index2+5+i*6),16);
 			     Log.i("log_tag", "left"+left+" string is"+ string.substring(string.length()-index2+i*6+1, 2+string.length()-index2+5+i*6));	
 			     if(temp>0x7fffff)//表明为负数
 				 {
