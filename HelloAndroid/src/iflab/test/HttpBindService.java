@@ -8,12 +8,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 public class HttpBindService extends Service
 {
+	private Bundle thresholdData = new Bundle();
 	 private NotificationManager mNM;
 	 private final Random mGenerator = new Random();
 	    // Unique Identification Number for the Notification.
@@ -41,6 +43,8 @@ public class HttpBindService extends Service
 
 	    @Override
 	    public int onStartCommand(Intent intent, int flags, int startId) {
+	    	thresholdData= intent.getExtras();
+	    	
 	        Log.i("LocalService", "Received start id " + startId + ": " + intent);
 	        // We want this service to continue running until it is explicitly
 	        // stopped, so return sticky.
@@ -58,6 +62,7 @@ public class HttpBindService extends Service
 
 	    @Override
 	    public IBinder onBind(Intent intent) {
+	    	
 	        return mBinder;
 	    }
 
