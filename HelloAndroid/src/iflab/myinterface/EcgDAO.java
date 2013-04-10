@@ -5,6 +5,7 @@ import java.sql.Time;
 
 import iflab.model.ECG;
 import iflab.model.elder;
+import iflab.test.GraphicsData;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,9 +14,11 @@ public class EcgDAO
 {
   DBOpenHelper helper;
   SQLiteDatabase db;
+  GraphicsData graphicsData;
 
   public EcgDAO(Context context)
   {
+	 
 	helper= new DBOpenHelper(context);  
   }
   
@@ -56,7 +59,18 @@ public class EcgDAO
 		db.execSQL("insert into ECG_DATA (id,name,date,time,ecg,bpm) values (?,?,?,?,?,?)", new Object[]
 		{ ecg.getid(),ecg.getname(),ecg.getdate(), ecg.getTime(),ecg.getecg(),ecg.getbpm()});
 	}
-
+  
+  public void bulkstore(GraphicsData graphicsData, ECG ecg)
+  {
+	  this.graphicsData=graphicsData;
+	  db=helper.getWritableDatabase();
+	  for (int j = 0; j < 14*3; j++)
+	{
+		db.execSQL("insert into ECG_DATA (id,name,date,time,ecg,bpm) values (?,?,?,?,?,?)", new Object[]
+	  { ecg.getid(),ecg.getname(),ecg.getdate(), ecg.getTime(),this.graphicsData.data[j+485] ,ecg.getbpm()});
+	}
+	   }
+  
 	public void update(ECG ecg)
 	{
 		db=helper.getWritableDatabase();

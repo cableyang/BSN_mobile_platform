@@ -141,14 +141,17 @@ public class firstActivity extends Activity
 	  //  studentDAO=new StudentDAO(this.getBaseContext());
 	     ecgDAO = new EcgDAO(getBaseContext()); 
 	     elderDAO= new ElderDAO(getBaseContext());
-	     
+  
 	     //建立表
 	     ecgDAO.createtable();
 	     elderDAO.creattable();
 	     
 	    graphicsECGData = new GraphicsData(RATE500); //分别对ECG和PLUSE进行频率设定
 	    graphicsPluseData = new GraphicsData(RATE500);
-	 //   String urlString="http://223.3.61.67/ecg2mysql.php";
+	 
+	    store2Sqlite=new Store2Sqlite(ecgDAO,graphicsECGData);
+	    
+	    //   String urlString="http://223.3.61.67/ecg2mysql.php";
 	    //数据库写入
 	     for(int i=1; i<10; i++)
 	    {
@@ -236,12 +239,12 @@ public class firstActivity extends Activity
 					Log.i("BUFFER IS", "firstmessage is "+firstmessage);
 					num = blueStream.read(bytes);
 					readMessage = new String(bytes, 0, num);
-					secondmessage=readMessage; //得到的数据传输至第二个
-					transimitString=firstmessage+secondmessage;
-					graphicsECGData.dealwithstring(transimitString);
-					firstmessage=secondmessage;
-
-					
+					//secondmessage=readMessage; //得到的数据传输至第二个
+					//transimitString=firstmessage+secondmessage;
+					graphicsECGData.dealwithstring(readMessage);
+					Log.i("BUFFER IS", "readMessage is "+readMessage);
+				//	firstmessage=secondmessage;
+                   // store2Sqlite.StartStroing();	
 					} catch (IOException e)
 					{
 						// TODO Auto-generated catch block
@@ -512,7 +515,7 @@ public class firstActivity extends Activity
 	        	        	}
 	        	        };
 	        	        bttimeflag=false;
-	                    bttimer.schedule(bttask, 500, 35*3);
+	                    bttimer.schedule(bttask, 500, 35*2);
  	
             		}else{
             			bRun = true;
@@ -540,7 +543,8 @@ public class firstActivity extends Activity
     		//接收线程
     		while(true)
     		{					
-        				try
+        			
+    			try
 						{
 							num=blueStream.read(buffer);
 				
