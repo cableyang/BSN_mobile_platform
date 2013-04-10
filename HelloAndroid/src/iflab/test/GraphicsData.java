@@ -119,10 +119,8 @@ public class GraphicsData
 						 temp=(~temp+1)&0x7fffff;
 					 }
 					 adddata(200-200*temp/value);
-				} 
-				
+				} 	
 			}
-			
 			
 			index2=index2+3+6*14+5;
 			if(string.charAt(index2+3)=='a')

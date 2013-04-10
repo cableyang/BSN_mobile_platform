@@ -74,6 +74,10 @@ public class firstActivity extends Activity
 	
     private static Handler drhandler;
 	
+    /*
+     * 
+     */
+    Store2Sqlite store2Sqlite;
 	
 	/*
 	 * 特殊字符定义段
@@ -261,21 +265,14 @@ public class firstActivity extends Activity
         		 
         		super.handleMessage(msg);
         	}
-        }; 
-	    
-	    
+        };     
 	  }  
-	
-	
+
 	   void doBindService() 
-	   {
-	    	    // Establish a connection with the service.  We use an explicit
-	    	    // class name because we want a specific service implementation that
-	    	    // we know will be running in our own process (and thus won't be
-	    	    // supporting component replacement by other applications).
-	    	    bindService(new Intent(firstActivity.this,HttpBindService.class), mConnection, Context.BIND_AUTO_CREATE);
-	    	    mIsBound = true;
-	    	    Log.i("log_tag", "is do binding service	..");
+	   { 
+		   bindService(new Intent(firstActivity.this,HttpBindService.class), mConnection, Context.BIND_AUTO_CREATE);
+	       mIsBound = true;
+	       Log.i("log_tag", "is do binding service	..");
 	    	}
 
 	    	void doUnbindService() {
@@ -328,16 +325,14 @@ public class firstActivity extends Activity
 			@Override
 			public void onServiceDisconnected(ComponentName name)
 			{
-				// TODO Auto-generated method stub
-				   // This is called when the connection with the service has been
+		     // TODO Auto-generated method stub
+		     // This is called when the connection with the service has been
  	        // unexpectedly disconnected -- that is, its process crashed.
  	        // Because it is running in our same process, we should never
  	        // see this happen.
 			mIsBound=false;
- 	        mBindService = null;
- 	        
+ 	        mBindService = null;   
 			}
-
  	};
  
 	/*
@@ -366,8 +361,6 @@ public class firstActivity extends Activity
 	    	   }   	   
 	       }.start();
 	}
-	
-	
 	
     /*
      * deal with all the main button message
@@ -404,7 +397,6 @@ public class firstActivity extends Activity
 			default:
 				break;
 			}
-			
 		}
 	};
 	
@@ -530,12 +522,14 @@ public class firstActivity extends Activity
     	default:break;
     	}  
     }	
+   
+    
+    
     
     
   //单独开辟线程来读取蓝牙数据
     Thread ReadThread=new Thread(){
     	Calendar ca = Calendar.getInstance();
-    	   
     	public void run()
     	{
     		
