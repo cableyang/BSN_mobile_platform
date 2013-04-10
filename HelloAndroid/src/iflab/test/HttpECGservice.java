@@ -1,4 +1,4 @@
-package iflab.myinterface;
+package iflab.test;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Context;
 import android.util.Log;
 
 import iflab.model.ECG;
@@ -20,10 +21,12 @@ public class HttpECGservice
 {
 	 String urlString="http://223.3.61.67/ecg2mysql.php";
 	 InputStream isInputStream;
+	 GraphicsData graphicsData;
 	// ArrayList <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
 	 public HttpECGservice()
 	 {
-		 super();
+		super();
+		  
 	 }
 	 
 	 /*
@@ -35,7 +38,12 @@ public class HttpECGservice
 		 ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		 nameValuePairs.add(new BasicNameValuePair("id",String.valueOf(ecg.getid())));
 		 nameValuePairs.add(new BasicNameValuePair("name",ecg.getname()));
-		 nameValuePairs.add(new BasicNameValuePair("ecg", String.valueOf(ecg.getecg())));
+		 
+		 for(int i=0; i<50; i++)
+		 {
+	     nameValuePairs.add(new BasicNameValuePair("ecg["+i+"]", String.valueOf(1))); 
+		 }
+		
 		 nameValuePairs.add(new BasicNameValuePair("bpm", String.valueOf(ecg.getbpm())));
 		 
 		 try{
@@ -43,8 +51,8 @@ public class HttpECGservice
 	         HttpPost httppost = new HttpPost(urlString);
 	         httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 	         HttpResponse response = httpclient.execute(httppost);
-	         HttpEntity entity = response.getEntity();
-	         isInputStream = entity.getContent();		 
+	        // HttpEntity entity = response.getEntity();
+	        // isInputStream = entity.getContent();		 
 	        }catch(Exception e)
 	        {
 	          Log.e("log_tag", "Error in http connection"+e.toString());

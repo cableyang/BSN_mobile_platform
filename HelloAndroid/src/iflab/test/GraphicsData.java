@@ -1,6 +1,5 @@
 package iflab.test;
 
-import iflab.model.Student;
 import iflab.myinterface.StudentDAO;
 import android.Manifest.permission;
 import android.content.Context;

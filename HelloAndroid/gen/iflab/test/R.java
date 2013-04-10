@@ -139,6 +139,7 @@ public final class R {
         public static final int yellow=0x7f02007d;
     }
     public static final class id {
+        public static final int Bind=0x7f05000a;
         public static final int ECG_SINGAL=0x7f050006;
         public static final int LL=0x7f050005;
         public static final int Pluse=0x7f050007;
@@ -150,7 +151,6 @@ public final class R {
         public static final int more=0x7f05000d;
         public static final int new_devices=0x7f050002;
         public static final int paired_devices=0x7f050000;
-        public static final int shop_checkin=0x7f05000a;
         public static final int sname=0x7f05000e;
         public static final int title_new_devices=0x7f050001;
         public static final int tool_bar=0x7f050008;

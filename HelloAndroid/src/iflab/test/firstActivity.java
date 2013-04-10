@@ -1,12 +1,10 @@
 package iflab.test;
 
-import httpservice.HttpService;
 import iflab.model.ECG;
 import iflab.model.Student;
 import iflab.model.elder;
 import iflab.myinterface.EcgDAO;
 import iflab.myinterface.ElderDAO;
-import iflab.myinterface.HttpECGservice;
 import iflab.myinterface.StudentDAO;
 import iflab.test.R.id;
 
@@ -16,6 +14,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.sql.Time;
+import java.text.BreakIterator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +23,8 @@ import java.util.SimpleTimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+
+import javax.security.auth.PrivateCredentialPermission;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,15 +38,20 @@ import org.apache.http.message.BasicNameValuePair;
 
 
 
+import android.R.bool;
 import android.R.integer;
 import android.R.string;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.StaticLayout;
 import android.text.format.DateFormat;
@@ -90,6 +96,9 @@ public class firstActivity extends Activity
 	private static String  secondmessage;//存放第二个信息
 	private static String transimitString; //传输字符串
 	
+	private HttpBindService mBindService;
+	
+	boolean mIsBound;
 	
 	
 	BluetoothDevice _device = null;     //蓝牙设备
@@ -114,7 +123,7 @@ public class firstActivity extends Activity
 	 * 按钮定义
 	 */
 	Button blueStartButton;  //启动蓝牙
-	
+	Button bindButton;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -128,14 +137,14 @@ public class firstActivity extends Activity
 	  //  studentDAO=new StudentDAO(this.getBaseContext());
 	     ecgDAO = new EcgDAO(getBaseContext()); 
 	     elderDAO= new ElderDAO(getBaseContext());
-	     httpECGservice = new HttpECGservice();
+	     
 	     //建立表
 	     ecgDAO.createtable();
 	     elderDAO.creattable();
 	     
 	    graphicsECGData = new GraphicsData(RATE500); //分别对ECG和PLUSE进行频率设定
 	    graphicsPluseData = new GraphicsData(RATE500);
-	    String urlString="http://223.3.61.67/ecg2mysql.php";
+	 //   String urlString="http://223.3.61.67/ecg2mysql.php";
 	    //数据库写入
 	     for(int i=1; i<10; i++)
 	    {
@@ -155,14 +164,19 @@ public class firstActivity extends Activity
 	    	 	 elderDAO.addelder(elder);
 	    	*/
 	    }  
+	          
 	     
-	    
+	     /*
+	      * 后台进行数据传输
+	      */
+	     
 	     try
 		{
-	    	 Intent intent=new Intent(firstActivity.this, HttpService.class);
-	        startService(intent);
-		 	//intent.setAction("httpserivce.HttpService");
-	       // startService(intent);
+	    	doBindService();	 
+	    	 //Intent intent=new Intent(firstActivity.this, HttpService.class);
+	      //  startService(intent);
+	       // Log.i("handler", "the service is on create");
+		 	 
 		} catch (Exception e)
 		{
 			// TODO: handle exception
@@ -191,7 +205,8 @@ public class firstActivity extends Activity
 	    this.myGraphics2=new MyGraphics(this, RATE500, graphicsPluseData);		//创建自定义View对象
 	    layout_pluse.addView(myGraphics2, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
          
-	  
+	    bindButton =(Button)findViewById(R.id.Bind);
+	    bindButton.setOnClickListener(listener);
 	  
 	    blueStartButton = (Button)findViewById(R.id.bluestart);
 	    blueStartButton.setOnClickListener(listener);
@@ -221,9 +236,7 @@ public class firstActivity extends Activity
 					transimitString=firstmessage+secondmessage;
 					graphicsECGData.dealwithstring(transimitString);
 					firstmessage=secondmessage;
- 	                
-				    ECG ecg=new ECG(1, "杨华", null, null, graphicsECGData.data[499], 0); 
-				    httpECGservice.set2mysql(ecg);
+
 					
 					} catch (IOException e)
 					{
@@ -254,11 +267,35 @@ public class firstActivity extends Activity
 	  }  
 	
 	
+	   void doBindService() 
+	   {
+	    	    // Establish a connection with the service.  We use an explicit
+	    	    // class name because we want a specific service implementation that
+	    	    // we know will be running in our own process (and thus won't be
+	    	    // supporting component replacement by other applications).
+	    	    bindService(new Intent(firstActivity.this,HttpBindService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    	    mIsBound = true;
+	    	    Log.i("log_tag", "is do binding service	..");
+	    	}
+
+	    	void doUnbindService() {
+	    	    if (mIsBound) {
+	    	        // Detach our existing connection.
+	    	        unbindService(mConnection);
+	    	        mIsBound = false;
+	    	    }
+	    	}
+	
+	@Override
+	protected void onDestroy() {
+	    super.onDestroy();
+	    doUnbindService();
+	}
+	 
+
 	public static String charToHexString(byte strPart) 
     {
-          //String hexString = "";
-          //int ch = (int) (strPart);
-          //String strHex = Integer.toHexString(ch); 
+        
     	  String hex = Integer.toHexString(strPart & 0x00FF);
     	  if (hex.length() == 1) 
     	  {        
@@ -268,12 +305,41 @@ public class firstActivity extends Activity
         return hex;
     }
    
- public int byte2int(byte a)
-{
-	return a;
-	 
-}
 
+ 
+ ServiceConnection mConnection = new ServiceConnection() 
+ {  
+			@Override
+			public void onServiceConnected(ComponentName name,IBinder service)
+			{
+				// TODO Auto-generated method stub
+				 // This is called when the connection with the service has been
+ 	        // established, giving us the service object we can use to
+ 	        // interact with the service.  Because we have bound to a explicit
+ 	        // service that we know is running in our own process, we can
+ 	        // cast its IBinder to a concrete class and directly access it.
+ 	    	mBindService = ((HttpBindService.LocalBinder)service).getService();
+ 	        // Tell the user about this for our demo.
+ 	    	mIsBound=true;
+ 	    	Log.i("log_tag", " on service connected..");
+ 	    	
+			}
+
+			@Override
+			public void onServiceDisconnected(ComponentName name)
+			{
+				// TODO Auto-generated method stub
+				   // This is called when the connection with the service has been
+ 	        // unexpectedly disconnected -- that is, its process crashed.
+ 	        // Because it is running in our same process, we should never
+ 	        // see this happen.
+			mIsBound=false;
+ 	        mBindService = null;
+ 	        
+			}
+
+ 	};
+ 
 	/*
 	 * check is bluetooth is available
 	 * create a thread to always open the bluetooth
@@ -322,6 +388,17 @@ public class firstActivity extends Activity
             
 			case R.id.button_cancel:
 				
+				break;
+				
+			case R.id.Bind:
+				if (mIsBound) {
+		            // Call a method from the LocalService.
+		            // However, if this call were something that might hang, then this request should
+		            // occur in a separate thread to avoid slowing down the activity performance.
+		            int num = mBindService.getRandomNumber();
+			 
+		           Log.i("log_tag", "number is"+num);
+		        }
 				break;
 
 			default:

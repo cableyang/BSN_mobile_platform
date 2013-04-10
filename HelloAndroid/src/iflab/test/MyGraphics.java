@@ -16,7 +16,6 @@ import android.graphics.Typeface;
 import android.test.AndroidTestCase;
 import android.util.Log;
 import android.view.View;
-import iflab.test.GraphicsData;
 
 
 /*
