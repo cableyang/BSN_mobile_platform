@@ -122,7 +122,7 @@ public class GraphicsData
 		
 		
 		 //对020a之间的数据进行处理 xx xx xx 030a 020a
-		 if (index1>9)
+		 if (index1>13)
 		{ 
 			 int before=(int)(index1-4)/6;
 			for (int i = 0; i < before; i++)

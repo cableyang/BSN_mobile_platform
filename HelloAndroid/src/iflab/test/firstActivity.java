@@ -94,14 +94,8 @@ public class firstActivity extends Activity
 	private final static int REQUEST_CONNECT_DEVICE = 1;    //宏定义查询设备句	
     private final static String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";   //SPP服务UUID号	
     private InputStream blueStream;    //输入流，用来接收蓝牙数据
-    private OutputStream blueoutOutputStream;
-	private static TextView dis,rnds;       //接收数据显示句柄
-	private static  String smsg = "";    //显示用数据缓存
-	private static String readMessage="";
+    private static String readMessage="";
 	private static String firstmessage;//存放第一个信息
-	private static String  secondmessage;//存放第二个信息
-	private static String transimitString; //传输字符串
-	
 	private HttpBindService mBindService;
 	
 	boolean mIsBound;
@@ -227,21 +221,13 @@ public class firstActivity extends Activity
 	      */	
 	     ECG ecg=new ECG(1, "杨华", null, null, 0, 0);
 	     httpECGservice= new HttpECGservice(ecg, graphicsECGData);
-	     try
-		{
-	
-	     
+	         
          httpECGservice.StartSending();
-		} catch (Exception e)
-		{
-			// TODO: handle exception
-		}
-	    
-    
+		
 	     /*
 	      * 后台进行数据传输
 	      */
-	     doBindService();	 
+	    // doBindService();	 
    
 	    
       /*
@@ -268,7 +254,11 @@ public class firstActivity extends Activity
 					Log.i("BUFFER IS", "firstmessage is "+firstmessage);
 					num = blueStream.read(bytes);
 					readMessage = new String(bytes, 0, num);
+					Log.i("deal with things", "begin");
 					graphicsECGData.dealwithstring(readMessage);
+					Log.i("deal with things", "stop");
+					//开始发送数据
+					 httpECGservice.httpStart=true;  //允许开始发送数据
 					Log.i("BUFFER IS", "readMessage is "+readMessage);
 					} catch (IOException e)
 					{
@@ -525,7 +515,7 @@ public class firstActivity extends Activity
 	        	        	}
 	        	        };
 	        	        bttimeflag=false;
-	        	        httpECGservice.httpStart=true;  //允许开始发送数据
+	        	      
 	                    bttimer.schedule(bttask, 500, 35*2);
  	
             		}else{

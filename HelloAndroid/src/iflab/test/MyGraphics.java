@@ -94,15 +94,13 @@ public class MyGraphics extends View implements Runnable{	//×Ô¶¨ÒåView
 		// TODO Auto-generated method stub
 		while(!Thread.currentThread().isInterrupted())
 		{
-			
+			 
 			try
 			{
-				Thread.sleep(100);
-				//Log.i("ECG_PLOG", "The plog thread is"+Thread.currentThread().getId());
-			}
-			catch(InterruptedException e)
+				Thread.sleep(35*2);
+			} catch (Exception e)
 			{
-				Thread.currentThread().interrupt();
+				// TODO: handle exception
 			}
 			//Log.i("HELLO", "this is that");
 			String msg="";

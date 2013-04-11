@@ -25,12 +25,13 @@ public class Store2Sqlite
 	  ecgDAO=ecgDAO2;
 	  graphicsData=graphicsECGData;
 	  isReady=true;
-	  storeThread.start();
+	  start=false;
+	 
 }
 
 public void StartStroing()
 {
-	 start=true;
+	  storeThread.start();
 }
 	
 	
