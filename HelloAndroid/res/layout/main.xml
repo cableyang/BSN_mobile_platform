@@ -9,8 +9,8 @@
     <LinearLayout
         android:id="@+id/ECG_SINGAL"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_weight="0.05"
+        android:layout_height="110dp"
+        android:layout_weight="0.04"
         android:orientation="vertical" >
 
     </LinearLayout>
@@ -18,8 +18,8 @@
     <LinearLayout
         android:id="@+id/Pluse"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_weight="0.03"
+        android:layout_height="130dp"
+        android:layout_weight="0.04"
         android:orientation="vertical" >
 
     </LinearLayout>

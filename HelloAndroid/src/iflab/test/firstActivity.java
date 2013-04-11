@@ -49,10 +49,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.text.StaticLayout;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -65,7 +70,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class firstActivity extends Activity 
+public class firstActivity extends Activity  
 {
 	private Timer bttimer = new Timer();
 	private TimerTask bttask;
@@ -73,10 +78,7 @@ public class firstActivity extends Activity
 	private boolean updataflag=false;
 	
     private static Handler drhandler;
-	
-    /*
-     * 
-     */
+ 
     Store2Sqlite store2Sqlite;
 	
 	/*
@@ -112,14 +114,18 @@ public class firstActivity extends Activity
     boolean bThread = false;
     private BluetoothAdapter _bluetooth = BluetoothAdapter.getDefaultAdapter();    //获取本地蓝牙适配器，即蓝牙设备
 	
+    //sensor demo
+    private SensorManager mSensorManager;
+    private Sensor mLight;
 	/*
 	 * 显示界面定义和 数据
 	 */
 	public GraphicsData graphicsECGData;
-	public GraphicsData graphicsPluseData;
+	public GraphicsData accdataX,accdataY,accdataZ;
 	
 	private MyGraphics myGraphics1=null;			//声明自定义View对象
-	private MyGraphics myGraphics2=null;
+//	private MyGraphics myGraphics2=null;
+	private PlotOfAcc plotOfAcc=null;
 	ElderDAO elderDAO;  //创建老人数据对象
 	EcgDAO ecgDAO;
 	HttpECGservice httpECGservice; //申请httpecg远程服务器
@@ -138,89 +144,110 @@ public class firstActivity extends Activity
 	    LinearLayout layout_ecg = (LinearLayout)findViewById(R.id.ECG_SINGAL);
 	    LinearLayout layout_pluse = (LinearLayout)findViewById(R.id.Pluse);
 	    
-	  //  studentDAO=new StudentDAO(this.getBaseContext());
-	     ecgDAO = new EcgDAO(getBaseContext()); 
-	     elderDAO= new ElderDAO(getBaseContext());
-  
-	     //建立表
-	     ecgDAO.createtable();
-	     elderDAO.creattable();
-	     
-	    graphicsECGData = new GraphicsData(RATE500); //分别对ECG和PLUSE进行频率设定
-	    graphicsPluseData = new GraphicsData(RATE500);
-	 
-	    store2Sqlite=new Store2Sqlite(ecgDAO,graphicsECGData);
 	    
-	    //   String urlString="http://223.3.61.67/ecg2mysql.php";
-	    //数据库写入
-	     for(int i=1; i<10; i++)
-	    {
-   
-	    //	 ECG ecg=new ECG(1, "杨华", null, null, graphicsECGData.data[499], 0);
-			 //	ecgDAO.add(ecg);
-			// httpECGservice.set2mysql(ecg);
-	    	 
-	    	 //ECG ecg=new ECG(1, "cc", null, null, graphicsECGData.data[499], 0);
-			 //	ecgDAO.add(ecg);
-			// httpECGservice.set2mysql(ecg);
-              // long time=c.getTimeInMillis();
-	    	/*
-	    		 ECG ecg=new ECG(i, "add", (java.sql.Date) date, null, 2.0011+i, i/10.0);
-	    	     ecgDAO.add(ecg);
-	    		 elder elder=new elder(i, "dd", 22, "aa", "dddd");
-	    	 	 elderDAO.addelder(elder);
-	    	*/
-	    }  
-	          
-	     
-	     /*
-	      * 后台进行数据传输
-	      */
-	     
-	     try
-		{
-	    	doBindService();	 
-	    	 //Intent intent=new Intent(firstActivity.this, HttpService.class);
-	      //  startService(intent);
-	       // Log.i("handler", "the service is on create");
-		 	 
-		} catch (Exception e)
-		{
-			// TODO: handle exception
-		}
-	     
+	    //对心电信号显示部分初始化
+	    graphicsECGData = new GraphicsData(RATE500); //分别对ECG和PLUSE进行频率设定
+	    this.myGraphics1=new MyGraphics(this, RATE500,  graphicsECGData);		//创建自定义View对象
+	    layout_ecg.addView(myGraphics1, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));  
 	    double []p= new double [500];
 	    for (int i = 0; i < RATE500; i++)
 		{
-		 p[i] = 100*Math.sin(i/100.0)+50;
-		 graphicsECGData.adddata(p[i]);
+		
+		 graphicsECGData.adddata(300-0);
 		}
 	    
-	  //  graphicsECGData.putdata(p);
-	    
-	    this.myGraphics1=new MyGraphics(this, RATE500,  graphicsECGData);		//创建自定义View对象
-	    layout_ecg.addView(myGraphics1, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));  
-	 
-	    
-	    for (int i = 0; i < RATE500; i++)
-		{
-		 p[i] = 50*Math.cos(i/10.0)+50;
+	    //对加速度信号显示部分进行初始化
+	    accdataX = new GraphicsData(RATE500);
+	    accdataY = new GraphicsData(RATE500);
+	    accdataZ = new GraphicsData(RATE500);
+	    this.plotOfAcc=new PlotOfAcc(this, RATE500, accdataX,accdataY,accdataZ);		//创建自定义View对象
+	    layout_pluse.addView(plotOfAcc, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        for (int i = 0; i < RATE500; i++)
+		{ 
+		 accdataX.adddata(0);
+		 accdataY.adddata(0);
+		 accdataZ.adddata(0);
 		}
-	    
-	    graphicsPluseData.putdata(p);
-	    
-	    this.myGraphics2=new MyGraphics(this, RATE500, graphicsPluseData);		//创建自定义View对象
-	    layout_pluse.addView(myGraphics2, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-         
+     
+        
+        //UI部分初始化
 	    bindButton =(Button)findViewById(R.id.Bind);
 	    bindButton.setOnClickListener(listener);
 	  
 	    blueStartButton = (Button)findViewById(R.id.bluestart);
 	    blueStartButton.setOnClickListener(listener);
+
+	    /*
+	     * 硬件资源初始化蓝牙设备、加速度计等自带传感器
+	     * @with register of acc
+	     */
+	          BluetoothCheck(); //check that device
+	          
+	          mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+	    	   mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		      Toast.makeText(getApplicationContext(), mLight.getName()+mLight.getVersion()+mLight.getVendor(), Toast.LENGTH_LONG).show();
+		      SensorEventListener aListener = new SensorEventListener()
+			{
+				//加速度值变化时进行转化
+				@Override
+				public void onSensorChanged(SensorEvent event)
+				{
+					// TODO Auto-generated method stub
+					String str1,str2,str3;
+					accdataX.adddata(100+event.values[0]*10);
+					accdataY.adddata(100+event.values[1]*10);
+					accdataZ.adddata(100+event.values[2]*10);
+				}
+				
+				@Override
+				public void onAccuracyChanged(Sensor sensor, int accuracy)
+				{
+					// TODO Auto-generated method stub
+					
+				}
+			};
+		   
+	      mSensorManager.registerListener(aListener, mLight,100);
 	    
-	    BluetoothCheck(); //check that device
+	     /*
+	      * ****----ECGdata------->>>>SQLITE<<<<<<<<<<<<------
+	      * ****----elderDAO------>>>>SQLITE<<<<<<<<<<<<------
+	      */
+	     ecgDAO = new EcgDAO(getBaseContext()); 
+	     elderDAO= new ElderDAO(getBaseContext());
+	     ecgDAO.createtable();
+	     elderDAO.creattable();
+	     store2Sqlite=new Store2Sqlite(ecgDAO,graphicsECGData);
 	     
-	       
+	     
+	     /*
+	      * ****----ECGdata------->>>>PHP using <<<<<<<<<<<------ 
+	      * @httppost method and timertask 50bits and 10HZ
+	      * @under json data type<
+	      */	
+	     ECG ecg=new ECG(1, "杨华", null, null, 0, 0);
+	     httpECGservice= new HttpECGservice(ecg, graphicsECGData);
+	     try
+		{
+	
+	     
+         httpECGservice.StartSending();
+		} catch (Exception e)
+		{
+			// TODO: handle exception
+		}
+	    
+    
+	     /*
+	      * 后台进行数据传输
+	      */
+	     doBindService();	 
+   
+	    
+      /*
+       * using time method to deal with data on the bluestream
+       * @msg.what=2 is the most import method of that
+       */
 	    drhandler = new Handler() 
 		{
                
@@ -229,41 +256,27 @@ public class firstActivity extends Activity
         	{
         		 switch (msg.what) 
         		 {   
-	        	 	case 1:// updateChart(); 		
+	        	 	case 1: 	
+	        	 		Log.i("msg.what", "msg what is "+msg.what);
 	        		 break;
-	        	 	case 2:  //定时器中断
-	        	    byte []bytes=new byte[1024];
+	        	 	case 2:  //定时器中断 	    
 	        	 	int num;	
 					try
 					{
+						
+				    byte []bytes=new byte[1024];
 					Log.i("BUFFER IS", "firstmessage is "+firstmessage);
 					num = blueStream.read(bytes);
 					readMessage = new String(bytes, 0, num);
-					//secondmessage=readMessage; //得到的数据传输至第二个
-					//transimitString=firstmessage+secondmessage;
 					graphicsECGData.dealwithstring(readMessage);
 					Log.i("BUFFER IS", "readMessage is "+readMessage);
-				//	firstmessage=secondmessage;
-                   // store2Sqlite.StartStroing();	
 					} catch (IOException e)
 					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					 
-		        	break;
-		        	/*
-		        	 * 数据处理handler
-		        	 */
-	        	 	case 3:
-	        	 		int i=0;
-	        	 		i++;
-     			     
-     			       byte[] Readbuf = (byte[]) msg.obj;   	 		
-     			       readMessage = new String(Readbuf, 0, msg.arg1);	
-     			         Log.i("BUFFER IS", readMessage);
-     			        			 
-		        	break;
+		        	break;	 
         		 }
         		 
         		super.handleMessage(msg);
@@ -304,8 +317,6 @@ public class firstActivity extends Activity
     	  hex = "0x" + hex;
         return hex;
     }
-   
-
  
  ServiceConnection mConnection = new ServiceConnection() 
  {  
@@ -321,10 +332,8 @@ public class firstActivity extends Activity
  	    	mBindService = ((HttpBindService.LocalBinder)service).getService();
  	        // Tell the user about this for our demo.
  	    	mIsBound=true;
- 	    	Log.i("log_tag", " on service connected..");
- 	    	
+ 	    	Log.i("log_tag", " on service connected..");  	
 			}
-
 			@Override
 			public void onServiceDisconnected(ComponentName name)
 			{
@@ -366,8 +375,9 @@ public class firstActivity extends Activity
 	}
 	
     /*
-     * deal with all the main button message
-     * 处理所有按钮信息
+     * -----------------UI interface----------------------------------
+     * ----------------deal with all the main button message----------------
+     * ----------------处理所有按钮信息--------------------------------
      */
 	private OnClickListener listener = new OnClickListener()
 	{
@@ -515,6 +525,7 @@ public class firstActivity extends Activity
 	        	        	}
 	        	        };
 	        	        bttimeflag=false;
+	        	        httpECGservice.httpStart=true;  //允许开始发送数据
 	                    bttimer.schedule(bttask, 500, 35*2);
  	
             		}else{
@@ -525,50 +536,14 @@ public class firstActivity extends Activity
     	default:break;
     	}  
     }	
-   
-    
-    
-    
-    
+
   //单独开辟线程来读取蓝牙数据
     Thread ReadThread=new Thread(){
-    	Calendar ca = Calendar.getInstance();
-    	public void run()
-    	{
-    		
-    		int num = 0;
-    		byte[] buffer = new byte[1024];
-    		 
-    		bRun = true;
-    		//接收线程
-    		while(true)
-    		{					
-        			
-    			try
-						{
-							num=blueStream.read(buffer);
-				
-						} catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}         //读入数据
-						 
-        				          for(int i=0; i<num; i++)
-        				          {
-        				        	   Log.i("DEBUG", ""+buffer[i]);	
-        				          }
-        				          
-                            drhandler.obtainMessage(3, num, -1, buffer).sendToTarget();
-        					
-        	        	    
-        				  		
-    				}           
-        			  
-    		
+     
     	 
-     }
    };
+
+
 }
 
 

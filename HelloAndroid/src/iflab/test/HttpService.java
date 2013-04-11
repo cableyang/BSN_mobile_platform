@@ -39,7 +39,7 @@ public class HttpService extends Service
 		@Override
 		public void handleMessage(Message msg)
 		{	 
-			httpECGservice = new HttpECGservice();
+		 
 		    switch (msg.arg1)
 			{
 			case 1:
@@ -48,8 +48,8 @@ public class HttpService extends Service
 				
 			case 2:   //DEAL WITH DATA ON NETWORK
 				
-				 ECG ecg=new ECG(1, "Ñî»ª", null, null, 10, 0);  
-				 httpECGservice.set2mysql(ecg);
+				// ECG ecg=new ECG(1, "Ñî»ª", null, null, 10, 0);  
+			 
 				 Log.i("storing", "....");
 				break;
 			default:

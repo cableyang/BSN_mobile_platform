@@ -1,39 +1,30 @@
-package iflab.test;									//包名
+package iflab.test;
 
-import java.lang.Math;
-import org.apache.http.impl.conn.SingleClientConnManager;
-
-import android.R.string;
-import android.content.Context;							//导入类文件
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.test.AndroidTestCase;
+import android.graphics.Paint.Style;
 import android.util.Log;
 import android.view.View;
 
-
-/*
- * Function  MyGraphics use canvas and paint to draw a line with 250 to 1000 points
- * @Author YangHua cabelyang@126.com 
- * @Parameter 
- */
-public class MyGraphics extends View implements Runnable{	//自定义View
+public class PlotOfAcc extends View implements Runnable{	//自定义View
 	
-	GraphicsData graphicsData;
+	GraphicsData graphicsDataX;
+	GraphicsData graphicsDataY;
+	GraphicsData graphicsDataZ;
 	private Paint paint=null;	
 	//声明画笔对象
 	static int a=0;
-	public MyGraphics(Context context, int rate, GraphicsData pointGraphicsData) {
+	public PlotOfAcc(Context context, int rate, GraphicsData datax, GraphicsData datay, GraphicsData dataz) {
 		super(context);
 		// TODO Auto-generated constructor stub
-		graphicsData= pointGraphicsData;  //由指针指向传过来的数据
+     	graphicsDataX=datax;
+     	graphicsDataY=datay;
+     	graphicsDataZ=dataz;
 		paint=new Paint();							//构建对象
+     		
 		new Thread(this).start();					//开启线程
 	}
 	
@@ -41,20 +32,55 @@ public class MyGraphics extends View implements Runnable{	//自定义View
 		// TODO Auto-generated method stub
 		super.onDraw(canvas);
 		
-		paint.setAntiAlias(true);	//设置画笔为无锯齿
-		paint.setColor(Color.RED);	//设置画笔颜色
-		canvas.drawColor(Color.DKGRAY);				//白色背景
+		paint.setAntiAlias(true);	//设置画笔为无锯齿	
+		canvas.drawColor(Color.DKGRAY);				//白色背景canvas为画布
+		
+		
+		//*************************************************
+		//*****************数据读入绘制x轴加速度曲线**********
 		paint.setStrokeWidth((float) 4.0);				//线宽
 		paint.setStyle(Style.STROKE);
-		Path path = new Path();						//Path对象
-		//数据读入
-		path.moveTo(0, (float) graphicsData.data[0]);						//起始点
+		paint.setColor(Color.RED);	//设置画笔颜色
+		Path pathX = new Path();						//Path对象
+		
+		pathX.moveTo(0, (float) graphicsDataX.data[0]);						//起始点
 		for(int i=0; i<1000; i++)
 		{
-			path.lineTo(i, (float) graphicsData.data[i]);
+			pathX.lineTo(i, (float) graphicsDataX.data[i]);
 		}
-		    canvas.drawPath(path, paint);					//绘制任意多边形
+		 canvas.drawPath(pathX, paint);				
+		   
+		 
+		//*************************************************
+			//*****************数据读入绘制y轴加速度曲线**********
+			paint.setStrokeWidth((float) 4.0);				//线宽
+			paint.setStyle(Style.STROKE);
+			paint.setColor(Color.BLUE);	//设置画笔颜色
+			Path pathY = new Path();						//Path对象
+			
+			pathY.moveTo(0, (float) graphicsDataY.data[0]);						//起始点
+			for(int i=0; i<1000; i++)
+			{
+				pathY.lineTo(i, (float) graphicsDataY.data[i]);
+			}
+			 canvas.drawPath(pathY, paint);		
 		    
+				//*************************************************
+				//*****************数据读入绘制Z轴加速度曲线**********
+				paint.setStrokeWidth((float) 4.0);				//线宽
+				paint.setStyle(Style.STROKE);
+				paint.setColor(Color.YELLOW);	//设置画笔颜色
+				Path pathZ = new Path();						//Path对象
+				
+				pathY.moveTo(0, (float) graphicsDataZ.data[0]);						//起始点
+				for(int i=0; i<1000; i++)
+				{
+					pathZ.lineTo(i, (float) graphicsDataZ.data[i]);
+				}
+				 canvas.drawPath(pathZ, paint);		 
+			 
+				 
+				 
 		    //绘制纵向珊格
 		    paint.setAntiAlias(true);	//设置画笔为无锯齿
 			paint.setColor(Color.BLACK);	//设置画笔颜色 
@@ -81,7 +107,7 @@ public class MyGraphics extends View implements Runnable{	//自定义View
 				//绘制纵向坐标
 				for(int i=0; i<10; i++)
 				{
-					gridpath2.moveTo(0,i*50 );	
+					gridpath2.moveTo(0,i*50);	
 					gridpath2.lineTo(500, i*50);
 					canvas.drawText(""+(300-i*50), 0, i*50, paint);
 				}
