@@ -28,7 +28,7 @@ public class HttpECGservice
 	 TimerTask httpTimerTask;
 	 Timer timer;
 	 private Looper mServiceLooper;
-	
+	 int num2send=250;  //设置传输的数据个数
 	 GraphicsData graphicsData;
 	 boolean httpStart;
 	 boolean isready;
@@ -56,6 +56,7 @@ public class HttpECGservice
 	 public void Ecg2php()
 	{
 		 //装载数据
+		 
 		 ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		 nameValuePairs.add(new BasicNameValuePair("id",String.valueOf(ecg.getid())));
 		 nameValuePairs.add(new BasicNameValuePair("name","tester"));
@@ -63,9 +64,9 @@ public class HttpECGservice
 		 //nameValuePairs.add(new BasicNameValuePair("name",ecg.getname()));
 		 
 		 
-		 for(int i=0; i<50; i++)
+		 for(int i=0; i<num2send; i++)
 		 {
-	     nameValuePairs.add(new BasicNameValuePair("ecg"+i,String.valueOf(graphicsData.data[449+i]))); 
+	     nameValuePairs.add(new BasicNameValuePair("ecg"+i,String.valueOf(graphicsData.data[500-num2send+i]))); 
 		// Log.i("ECG", "ecg["+i+"]="+String.valu eOf(graphicsData.data[449+i]));
 		 }
 		

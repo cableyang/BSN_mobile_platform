@@ -74,8 +74,10 @@ public class firstActivity extends Activity
 {
 	private Timer bttimer = new Timer();
 	private TimerTask bttask;
+	private Timer httptiTimer = new Timer();
+	private TimerTask httptTask;
 	private boolean bttimeflag=true;
-	private boolean updataflag=false;
+
 	
     private static Handler drhandler;
  
@@ -244,6 +246,7 @@ public class firstActivity extends Activity
         		 {   
 	        	 	case 1: 	
 	        	 		Log.i("msg.what", "msg what is "+msg.what);
+	        	 		 httpECGservice.httpStart=true;  //允许开始发送数据
 	        		 break;
 	        	 	case 2:  //定时器中断 	    
 	        	 	int num;	
@@ -258,7 +261,7 @@ public class firstActivity extends Activity
 					graphicsECGData.dealwithstring(readMessage);
 					Log.i("deal with things", "stop");
 					//开始发送数据
-					 httpECGservice.httpStart=true;  //允许开始发送数据
+					
 					Log.i("BUFFER IS", "readMessage is "+readMessage);
 					} catch (IOException e)
 					{
@@ -507,17 +510,32 @@ public class firstActivity extends Activity
 	        	        	@Override
 	        	        	public void run() 
 	        	        	{
-	        	        		Message message = new Message();
-	        	        		 
+	        	        		//该消息用于更新ui信息
+	        	        		Message message = new Message();	 
 	        	        		message.what = 2;
 	        	        	    drhandler.sendMessage(message);
 	        	        	   
 	        	        	}
 	        	        };
-	        	        bttimeflag=false;
-	        	      
+	        	        bttimeflag=false; 
 	                    bttimer.schedule(bttask, 500, 35*2);
- 	
+	                    
+	          //-------------用于HTTP服务消息传递-----------------//
+	          //---------------------------------------------//
+	                    httptTask = new TimerTask()
+						{
+ 		                  @Override
+							public void run()
+							{
+								// TODO Auto-generated method stub	  
+ 		                	  //用于大量数据上传
+ 		                		Message message = new Message();	 
+	        	        		message.what = 1;
+	        	        	    drhandler.sendMessage(message);
+							}
+						};
+					   httptiTimer.schedule(httptTask, 500, 500);	
+ 
             		}else{
             			bRun = true;
             		}   
