@@ -28,27 +28,33 @@ public class HttpECGservice
 	 TimerTask httpTimerTask;
 	 Timer timer;
 	 private Looper mServiceLooper;
-	 int num2send=250;  //设置传输的数据个数
+	 int num2send=500;  //设置传输的数据个数
 	 GraphicsData graphicsData;
 	 boolean httpStart;
 	 boolean isready;
 	// ArrayList <NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
 	 public HttpECGservice(ECG ecg,GraphicsData gData)
 	 {
+		 graphicsData=new GraphicsData(500);
 		 httpStart=false;
 		 isready=true;
 		this.ecg=ecg;
-		graphicsData=gData;	
+		graphicsData.data=gData.data;	
 		 Log.i("httpservice", "class is running");
 		 
 	 }
 	
-
+   public void StartThread()
+{
+	httpSendingThread.start();
+}
 	
 	 
-	 public void StartSending()
+	 public void StartSending(GraphicsData gData)
 	{
-		httpSendingThread.start();
+		 httpStart=true;	 
+		graphicsData.data=gData.data;
+		
 	}
 	 /*
 	  * 将ECG数据打包json格式进行发送
@@ -96,6 +102,7 @@ public class HttpECGservice
 				{
 				  if (isready)
 				{
+					  httpStart=false;
 					  isready=false;
 					  Ecg2php();
 					  isready=true;

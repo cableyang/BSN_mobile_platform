@@ -74,6 +74,8 @@ public class firstActivity extends Activity
 {
 	private Timer bttimer = new Timer();
 	private TimerTask bttask;
+	public int timercount;
+	boolean httpstart; //开始HTTP传送
 	private Timer httptiTimer = new Timer();
 	private TimerTask httptTask;
 	private boolean bttimeflag=true;
@@ -190,9 +192,9 @@ public class firstActivity extends Activity
 				{
 					// TODO Auto-generated method stub
 					String str1,str2,str3;
-					accdataX.adddata(100+event.values[0]*10);
-					accdataY.adddata(100+event.values[1]*10);
-					accdataZ.adddata(100+event.values[2]*10);
+					accdataX.adddata(event.values[0]);
+					accdataY.adddata(event.values[1]);
+					accdataZ.adddata(event.values[2]);
 				}
 				
 				@Override
@@ -214,7 +216,7 @@ public class firstActivity extends Activity
 	     ecgDAO.createtable();
 	     elderDAO.creattable();
 	     store2Sqlite=new Store2Sqlite(ecgDAO,graphicsECGData);
-	     
+	     store2Sqlite.StartStroing();
 	     
 	     /*
 	      * ****----ECGdata------->>>>PHP using <<<<<<<<<<<------ 
@@ -224,7 +226,8 @@ public class firstActivity extends Activity
 	     ECG ecg=new ECG(1, "杨华", null, null, 0, 0);
 	     httpECGservice= new HttpECGservice(ecg, graphicsECGData);
 	         
-         httpECGservice.StartSending();
+	     httpECGservice.StartThread();
+         //httpECGservice.StartSending(graphicsECGData);
 		
 	     /*
 	      * 后台进行数据传输
@@ -246,22 +249,28 @@ public class firstActivity extends Activity
         		 {   
 	        	 	case 1: 	
 	        	 		Log.i("msg.what", "msg what is "+msg.what);
-	        	 		 httpECGservice.httpStart=true;  //允许开始发送数据
+	        	 		// httpECGservice.httpStart=true;  //允许开始发送数据
+	        	 		 httpECGservice.StartSending(graphicsECGData);
 	        		 break;
 	        	 	case 2:  //定时器中断 	    
-	        	 	int num;	
+
+	        	    int num;	
 					try
 					{
-						
 				    byte []bytes=new byte[1024];
-					Log.i("BUFFER IS", "firstmessage is "+firstmessage);
+					Log.i("BUFFER IS", "firstmessage is "+firstmessage);	
 					num = blueStream.read(bytes);
+					if (httpstart)
+					{
+						httpECGservice.StartSending(graphicsECGData);
+					}
+					
 					readMessage = new String(bytes, 0, num);
 					Log.i("deal with things", "begin");
 					graphicsECGData.dealwithstring(readMessage);
 					Log.i("deal with things", "stop");
 					//开始发送数据
-					
+                  	
 					Log.i("BUFFER IS", "readMessage is "+readMessage);
 					} catch (IOException e)
 					{
@@ -504,13 +513,27 @@ public class firstActivity extends Activity
             			return;
             		}
             		if(bThread==false){
-             
+                        
+            			
+            //==========当建立连接后进行初始化===================================
+            //=====================================
+            			timercount=0;
+            			httpstart=false;
+            			
             			bttask = new TimerTask() 
 	        	        {
+            				 
 	        	        	@Override
 	        	        	public void run() 
 	        	        	{
 	        	        		//该消息用于更新ui信息
+	        	                timercount++;
+	        	                if (timercount==14)
+								{
+									timercount=0;
+									httpstart=true; 
+									
+								}
 	        	        		Message message = new Message();	 
 	        	        		message.what = 2;
 	        	        	    drhandler.sendMessage(message);
@@ -522,7 +545,7 @@ public class firstActivity extends Activity
 	                    
 	          //-------------用于HTTP服务消息传递-----------------//
 	          //---------------------------------------------//
-	                    httptTask = new TimerTask()
+	                 /*   httptTask = new TimerTask()
 						{
  		                  @Override
 							public void run()
@@ -534,11 +557,11 @@ public class firstActivity extends Activity
 	        	        	    drhandler.sendMessage(message);
 							}
 						};
-					   httptiTimer.schedule(httptTask, 500, 500);	
- 
+					   httptiTimer.schedule(httptTask, 500, 1000);	
+                          */
             		}else{
             			bRun = true;
-            		}   
+            		}  
             }
     		break;
     	default:break;

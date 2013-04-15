@@ -22,7 +22,7 @@ public class GraphicsData
     public static final int RATE250 = 250;
 	public static final int RATE500 = 500;
 	public static final int RATE1000 = 1000;
-	public static int  rate=2;
+	public static int  rate=500;
 	public double []data=new double[1000];//定义1000个点进行显示
  
     public GraphicsData(int myrate)
@@ -70,11 +70,13 @@ public class GraphicsData
 	 int index2=0;
 	 int pack=(int)string.length()/((14*6+4*2));
 	 //定义数据包中有14个点
-	 final int value=65535;
+     final int ref_vol=2;  //参考电压
+	 final int value=0x7fffff;
      int packsize=14;
      Log.i("length", "string.length="+string.length()+"pack="+pack);
      
 	//通过逐一法 求出第一个020a的标记  首先进行020a定位正寻  
+     
 		 for (int i = 0; i < string.length()-6; i++)
 			{
 				if(string.charAt(i)=='0')
@@ -122,6 +124,7 @@ public class GraphicsData
 		
 		
 		 //对020a之间的数据进行处理 xx xx xx 030a 020a
+		
 		 if (index1>13)
 		{ 
 			 int before=(int)(index1-4)/6;
@@ -133,7 +136,12 @@ public class GraphicsData
 				 {
 					 temp=(~temp+1)&0x7fffff;
 				 }
-				 adddata(size-size*temp/value);
+				 int dataadd=size-size*temp/value;
+				 adddata(temp);
+				 if ((dataadd)<0)
+					{
+						Log.i("tag", "first size-size*temp/value= "+(dataadd));
+					}
 			}
 		}
 		 
@@ -151,7 +159,13 @@ public class GraphicsData
 				 {
 					 temp=(~temp+1)&0x7fffff;
 				 }
-				 adddata(size-size*temp/value);
+			 
+				 int dataadd=size-size*temp/value;
+				 adddata(temp);
+				 if ((dataadd)<0)
+					{
+						Log.i("tag", "second size-size*temp/value= "+(dataadd));
+					}
 				} catch (Exception e)
 				{
 					// TODO: handle exception
@@ -166,6 +180,7 @@ public class GraphicsData
 		 
 		 int lastindex=index1+pack*(14*6+4*2);
 		 int left = string.length()-lastindex-4;
+		 
 		 try
 		{
 			 if (left>10)
@@ -180,7 +195,7 @@ public class GraphicsData
 				 {
 					 temp=(~temp+1)&0x7fffff;
 				 } 
-				 adddata(size-size*temp/value);
+				 adddata(temp);
 				 
 				}
 				 
@@ -188,19 +203,7 @@ public class GraphicsData
 				
 			}
 			 
-				/*	
-				 for (int i = 0; i < left/6-1; i++)
-					{
-						 
-							int temp = Integer.parseInt(string.substring(lastindex+4+i*6, lastindex+4+5+1+i*6),16);
-							if(temp>0x7fffff)//表明为负数
-							 {
-								 temp=(~temp+1)&0x7fffff;
-							 }
-							 adddata(300-300*temp/value); 
-							 Log.i("log_tag", "left"+left+" string is"+ string.substring(lastindex, string.length() ));	
-						
-					}*/
+				 
 				} 
 			
 		} catch (Exception e)

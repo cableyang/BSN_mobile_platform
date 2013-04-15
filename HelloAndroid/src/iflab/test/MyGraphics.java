@@ -3,6 +3,7 @@ package iflab.test;									//包名
 import java.lang.Math;
 import org.apache.http.impl.conn.SingleClientConnManager;
 
+import android.R.integer;
 import android.R.string;
 import android.content.Context;							//导入类文件
 import android.graphics.Canvas;
@@ -24,7 +25,7 @@ import android.view.View;
  * @Parameter 
  */
 public class MyGraphics extends View implements Runnable{	//自定义View
-	
+	final int plotwidth=300;  //定义显示区域长度
 	GraphicsData graphicsData;
 	private Paint paint=null;	
 	//声明画笔对象
@@ -35,6 +36,25 @@ public class MyGraphics extends View implements Runnable{	//自定义View
 		graphicsData= pointGraphicsData;  //由指针指向传过来的数据
 		paint=new Paint();							//构建对象
 		new Thread(this).start();					//开启线程
+	}
+	
+	/*
+	 * function: 找最大值
+	 * @Input data[]为被查找数组； size为数组大小
+	 * @Output 最大值
+	 */
+	protected double findmax(double data[], int size)
+	{
+		double max=data[0];
+		for (int i = 0; i < size; i++)
+		{
+			if (max<data[i])
+			{
+				max=data[i];
+			}
+		}
+		return max;
+		
 	}
 	
 	protected void onDraw(Canvas canvas) {
@@ -48,10 +68,12 @@ public class MyGraphics extends View implements Runnable{	//自定义View
 		paint.setStyle(Style.STROKE);
 		Path path = new Path();						//Path对象
 		//数据读入
-		path.moveTo(0, (float) graphicsData.data[0]);						//起始点
+		int max=(int) findmax(graphicsData.data, graphicsData.rate);
+		//path.moveTo(0, (float) graphicsData.data[0]);						//起始点
 		for(int i=0; i<1000; i++)
 		{
-			path.lineTo(i, (float) graphicsData.data[i]);
+			float y = (float) (plotwidth-plotwidth*(graphicsData.data[i]/max));
+			path.lineTo(i, y);
 		}
 		    canvas.drawPath(path, paint);					//绘制任意多边形
 		    
