@@ -28,4 +28,10 @@
     <string name="find_dev">查找设备</string>
     <string name="unmatch">未连接设备</string>
     <string name="savename">保存文件名</string>
+    <string name="button">相册选择</string>
+    <string name="_">"     姓名："</string>
+    <string name="camera">照相机</string>
+    <string name="database">上传数据库</string>
+    <string name="checkedb">查找数据库</string>
+    <string name="age">"    年龄："</string>
 </resources>

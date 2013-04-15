@@ -11,10 +11,12 @@ public class elder
 	private int id;
 	private String address;
 	private String phone;
+	private String description;
+	private byte[]img;
 	//private String sanitation;
 	//‘§¡Ù’’∆¨
    
-	public elder(int id, String name, int age, String address, String phone)
+	public elder(int id, String name, int age, String address, String phone,String des, byte[]im)
 	{
 		super();
 		 this.id=id;
@@ -22,6 +24,8 @@ public class elder
 		 this.age=age;
 		 this.address=address;
 		 this.phone=phone;
+		 description=des;
+		 img=im;
 	}
  
 
@@ -68,6 +72,24 @@ public class elder
 	public void setphone(String phone)
 	{
 		this.phone=phone;
+	}
+	
+	public String getdescripiton()
+	{
+		return description;	
+	}
+	public void setdescription(String des)
+	{
+		this.phone=des;
+	}
+	
+	public byte[] getimg()
+	{
+		return img;	
+	}
+	public void setimg(byte [] im)
+	{
+		this.img=im;
 	}
 	
 	public String toString()

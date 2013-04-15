@@ -18,7 +18,7 @@
     <uses-permission android:name="android.hardware.camera.autofocus" />
      
     
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/oldman" android:label="@string/app_name">
         <activity android:name=".firstActivity"
                   android:label="@string/app_name">
             <intent-filter>
@@ -32,5 +32,6 @@
          <service android:name=".MyService"/>
          <service android:name=".HttpService" />
          <service android:name=".HttpBindService" />
+         <activity android:name="PatientID"></activity>
     </application>
 </manifest>

@@ -11,6 +11,7 @@ public class ElderDAO
 {
 	private DBOpenHelper helper;
 	private SQLiteDatabase db;
+	private String tablename="elder_in";
 	
 	public ElderDAO(Context context)
 	{
@@ -25,7 +26,7 @@ public class ElderDAO
 		db=helper.getWritableDatabase();
 		try
 		{
-			db.execSQL("create table elder_test (id integer primary key,name varchar(20),age integer, address varchar(32), phone varchar(15))");
+			db.execSQL("create table "+tablename+"(id integer primary key,name varchar(20),age integer, address varchar(32), phone varchar(15), decription text, img blob)");
 		} catch (Exception e)
 		{
 			// TODO: handle exception
@@ -37,7 +38,7 @@ public class ElderDAO
 		db=helper.getWritableDatabase();
 		try
 		{
-			db.execSQL("DROP table elder_test");
+			db.execSQL("DROP table "+tablename);
 		} catch (Exception e)
 		{
 			// TODO: handle exception
@@ -47,26 +48,26 @@ public class ElderDAO
 	public void addelder(elder elder)
 	{
 		db=helper.getWritableDatabase();
-		db.execSQL("insert into elder_test (id,name,age,address,phone) values (?,?,?,?,?)", new Object[]
-		{ elder.getid(), elder.getname(), elder.getage(), elder.getaddress(), elder.getphone()});
+		db.execSQL("insert into "+tablename+" (id,name,age,address,phone,decription,img) values (?,?,?,?,?,?,?)", new Object[]
+		{ elder.getid(), elder.getname(), elder.getage(), elder.getaddress(), elder.getphone(),elder.getdescripiton(),elder.getimg()});
 	}
 	
 	public void update(elder elder)
 	{
 		db=helper.getWritableDatabase();
-		db.execSQL("update elder_id set name = ?,age = ?,address = ? , phone = ? where sid = ?", new Object[]
-         {elder.getname(), elder.getage(), elder.getaddress(), elder.getphone(),elder.getid()});
+		db.execSQL("update "+tablename+"  set name = ?,age = ?,address = ? , phone = ?,decription=?,img=? where id = ?", new Object[]
+         {elder.getname(), elder.getage(), elder.getaddress(), elder.getphone(),elder.getdescripiton(),elder.getimg(),elder.getid()});
 	}
 	
 	public elder findElder(int id)
 	{
 		db = helper.getWritableDatabase();
-		Cursor cursor = db.rawQuery("select id,name,age,address,phone from elder_id where sid = ?", new String[]
+		Cursor cursor = db.rawQuery("select id,name,age,address,phone,decription,img from "+tablename+"  where id = ?", new String[]
 		{ String.valueOf(id)});
 		
 		if (cursor.moveToNext())
 		{
-			return new elder(cursor.getInt(cursor.getColumnIndex("id")),cursor.getString(cursor.getColumnIndex("name")), cursor.getInt(cursor.getColumnIndex("age")), cursor.getString(cursor.getColumnIndex("address")),cursor.getString(cursor.getColumnIndex("phone")));
+			return new elder(cursor.getInt(cursor.getColumnIndex("id")),cursor.getString(cursor.getColumnIndex("name")), cursor.getInt(cursor.getColumnIndex("age")), cursor.getString(cursor.getColumnIndex("address")),cursor.getString(cursor.getColumnIndex("phone")),cursor.getString(cursor.getColumnIndex("decription")),cursor.getBlob(cursor.getColumnIndex("img")));
 		}
 		return null;
 	}
@@ -77,7 +78,7 @@ public class ElderDAO
 	public void delete(int id)
 	{
 		db= helper.getWritableDatabase();
-		db.execSQL("delete from elder_id where id="+String.valueOf(id));
+		db.execSQL("delete from "+tablename+"  where id="+String.valueOf(id));
 	}
 	
 	

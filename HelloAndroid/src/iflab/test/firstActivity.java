@@ -1,46 +1,14 @@
 package iflab.test;
 
 import iflab.model.ECG;
-import iflab.model.Student;
-import iflab.model.elder;
 import iflab.myinterface.EcgDAO;
 import iflab.myinterface.ElderDAO;
-import iflab.myinterface.StudentDAO;
-import iflab.test.R.id;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.Socket;
-import java.sql.Time;
-import java.text.BreakIterator;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.SimpleTimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import javax.security.auth.PrivateCredentialPermission;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
- 
-
-
-
-import android.R.bool;
-import android.R.integer;
-import android.R.string;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -57,16 +25,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.provider.ContactsContract.CommonDataKinds.Event;
-import android.text.StaticLayout;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -79,6 +43,8 @@ public class firstActivity extends Activity
 	private Timer httptiTimer = new Timer();
 	private TimerTask httptTask;
 	private boolean bttimeflag=true;
+
+	
 
 	
     private static Handler drhandler;
@@ -132,6 +98,7 @@ public class firstActivity extends Activity
 	 */
 	Button blueStartButton;  //启动蓝牙
 	Button bindButton;
+	Button btnperson; //定义人信息button
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -174,7 +141,9 @@ public class firstActivity extends Activity
 	  
 	    blueStartButton = (Button)findViewById(R.id.bluestart);
 	    blueStartButton.setOnClickListener(listener);
-
+        
+	    btnperson=(Button)findViewById(R.id.person);
+	    btnperson.setOnClickListener(listener);
 	    /*
 	     * 硬件资源初始化蓝牙设备、加速度计等自带传感器
 	     * @with register of acc
@@ -381,7 +350,7 @@ public class firstActivity extends Activity
      * ----------------deal with all the main button message----------------
      * ----------------处理所有按钮信息--------------------------------
      */
-	private OnClickListener listener = new OnClickListener()
+	public OnClickListener listener = new OnClickListener()
 	{
 		
 		@Override
@@ -394,8 +363,13 @@ public class firstActivity extends Activity
 				StartBluetooth();  //开启蓝牙窗口
 				break;
             
-			case R.id.button_cancel:
+			case R.id.person:
 				
+				Intent intent=new Intent();
+				intent.setClass(firstActivity.this, PatientID.class);
+				intent.putExtra("str", "Intent Demo");
+				//startActivity(intent);
+				startActivityForResult(intent, 1);
 				break;
 				
 			case R.id.Bind:
@@ -515,8 +489,8 @@ public class firstActivity extends Activity
             		if(bThread==false){
                         
             			
-            //==========当建立连接后进行初始化===================================
-            //=====================================
+            //================当建立连接后进行初始化=================//
+            //=====================================================//
             			timercount=0;
             			httpstart=false;
             			
