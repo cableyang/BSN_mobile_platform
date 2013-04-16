@@ -75,21 +75,22 @@
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
             android:background="@drawable/imagebutton_background"
-            android:drawableTop="@drawable/toolbar_feedback"
+            android:drawableTop="@drawable/data_analysis"
             android:paddingTop="10.0dip"
             android:text="数据分析"
             android:textColor="#ffffffff"
             android:textSize="10.0sp" />
 
         <Button
-            android:id="@+id/more"
+            android:id="@+id/config"
             android:layout_width="0.0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
             android:background="@drawable/imagebutton_background"
-            android:drawableTop="@drawable/toolbar_more"
+            android:drawableTop="@drawable/config"
             android:paddingTop="10.0dip"
             android:textColor="#ffffffff"
+             android:text="配置"
             android:textSize="10.0sp" />
 
     </LinearLayout>

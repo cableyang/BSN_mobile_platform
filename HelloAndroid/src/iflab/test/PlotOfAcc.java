@@ -158,7 +158,7 @@ public class PlotOfAcc extends View implements Runnable{	//×Ô¶¨ÒåView
 			
 			try
 			{
-				Thread.sleep(100);
+				Thread.sleep(200);
 				//Log.i("ECG_PLOG", "The plog thread is"+Thread.currentThread().getId());
 			}
 			catch(InterruptedException e)

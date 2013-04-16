@@ -29,9 +29,12 @@
     <string name="unmatch">未连接设备</string>
     <string name="savename">保存文件名</string>
     <string name="button">相册选择</string>
-    <string name="_">"     姓名："</string>
-    <string name="camera">照相机</string>
-    <string name="database">上传数据库</string>
-    <string name="checkedb">查找数据库</string>
-    <string name="age">"    年龄："</string>
+    <string name="_">&quot; 姓名：&quot;</string>
+    <string name="camera">拍照</string>
+    <string name="register">注册</string>
+    <string name="checkedb">查找</string>
+    <string name="age">&quot;年龄：&quot;</string>
+    <string name="gallery">相册</string>
+    <string name="localrigister">本地注册</string>
+    <string name="remote_register">远程注册</string>
 </resources>

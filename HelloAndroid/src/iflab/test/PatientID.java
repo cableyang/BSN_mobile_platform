@@ -6,6 +6,8 @@ import iflab.myinterface.ElderDAO;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import org.w3c.dom.Text;
+
 import android.R.integer;
 import android.R.string;
 import android.app.Activity;
@@ -16,6 +18,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -23,23 +27,33 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
  
 public class PatientID extends Activity
 {
 	/** Called when the activity is first created. */
 	private ImageView imageView;
-	 
+	private Handler handler;
+	
 	private Bitmap myBitmap;
 	private byte[] mContent;
 	Bitmap resizedBitmap;
 	//UI按钮界面
 	Button caremabtn,gallerybtn;
 	Button backButton;
-	Button checkButton,twodabaseButton;
+	Button checkButton,writedb;
     TextView nameTextView;
+    public String nameString;
+    TextView idTextView;
+    int id;
     TextView ageTextView;
+    public int age;
     TextView phoneTextView;
+    public String phoneString;
     TextView decrpitontTextView;
+    public String des;
+    TextView addressTextView;
+    String address;
 	ElderDAO elderDAO;
 	elder elder;
 	
@@ -50,10 +64,11 @@ public class PatientID extends Activity
 		setContentView(R.layout.patientid);
 		
 		nameTextView=(TextView)findViewById(R.id.name);
+		idTextView=(TextView)findViewById(R.id.id);
 		ageTextView=(TextView)findViewById(R.id.age);
-		 phoneTextView=(TextView)findViewById(R.id.myphone);
+		phoneTextView=(TextView)findViewById(R.id.myphone);
 		decrpitontTextView=(TextView)findViewById(R.id.decrpiton);
-		
+		addressTextView=(TextView)findViewById(R.id.address);
 		imageView = (ImageView) findViewById(R.id.imageView);
 		caremabtn=(Button)findViewById(R.id.camera);
 		gallerybtn=(Button)findViewById(R.id.gallery);
@@ -61,8 +76,99 @@ public class PatientID extends Activity
 		
 		elderDAO=new ElderDAO(getBaseContext());
 		elderDAO.creattable();
+ 	
+		/*
+		 * 添加handler处理进程
+		 */
+		handler=new Handler()
+		{
+            String nameString;
+            int age;
+            String phone;
+            String description;
+            String address;
+            int id;
+            
+			@Override
+			public void handleMessage(Message msg)
+			{
+				// TODO Auto-generated method stub 
+				
+				nameString=PatientID.this.nameString;
+				phone=PatientID.this.phoneString;
+				age=PatientID.this.age;
+				description=PatientID.this.des;
+				address=PatientID.this.address;
+				id=PatientID.this.id;
+				
+				switch (msg.what)
+				{
+				case 1:  //运用httppost将信息传递给相关php页面进行远程注册
+					
+					break;
+				case 2:  //通过sqlite将信息存放在相应表中 实现本地注册
+					
+					  // input some ready information	
+					if (mContent==null)
+					{
+						Toast.makeText(getBaseContext(), "请上传照片或拍照", Toast.LENGTH_LONG).show();
+					}
+					else {
+				  try
+					{	 
+				    elder=new elder(id, nameString, age,address,  phone, description, mContent);		 
+				    elderDAO.addelder(elder); 
+				    
+				     Toast.makeText(getBaseContext(), "本地注册成功", Toast.LENGTH_LONG).show();
+					} catch (Exception e)
+					{
+						// TODO: handle exception
+						Toast.makeText(getBaseContext(), "本地注册失败", Toast.LENGTH_LONG).show();		
+					}
+					}
+				   
+					break;
+				case 3:  //通过相关信息进行检索
+					try
+					{
+						
+					 	elder=new elder(0, null, 0, null, null, null, null);
+					    elder=elderDAO.findElderbyname(nameString);
+					    
+					    if(elder==null)
+					    {
+					    	Toast.makeText(getBaseContext(), "没有注册请注册", Toast.LENGTH_LONG).show();
+					    }
+					    else {
+					    	
+						 byte []b=elder.getimg();
+					     ageTextView.setText(String.valueOf(elder.getage()));
+					     Log.i("patientid","the elder age is.."+ elder.getage());
+					     nameTextView.setText(elder.getname().toString());
+					     idTextView.setText(String.valueOf(elder.getid()));
+					     phoneTextView.setText(elder.getphone().toString());
+					     addressTextView.setText(elder.getaddress().toString());
+					     decrpitontTextView.setText(elder.getdescripiton().toString());
+					     Log.i("patientid",elder.getdescripiton().toString());
+				         Bitmap bmimage =BitmapFactory.decodeByteArray(b, 0, b.length);		           
+			             imageView.setImageBitmap(rotateBitmap(bmimage));
+			            
+						}
+					   
+					} catch (Exception e)
+					{
+						// TODO: handle exception
+					}
+					break;
+				default:
+					break;
+				}
+			}
+ 	};
 		
-		
+		/*
+		 * camera功能
+		 */
 		caremabtn.setOnClickListener(new OnClickListener()
 		{
 			
@@ -70,15 +176,18 @@ public class PatientID extends Activity
 			public void onClick(View v)
 			{
 				// TODO Auto-generated method stub
-				Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");
-				startActivityForResult(getImageByCamera, 1);	
 				
-			}
+					Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");
+				    startActivityForResult(getImageByCamera, 1);
+	     	}
 		});
 		
+		
+		/*
+		 * 用于浏览相册功能
+		 */
 		gallerybtn.setOnClickListener(new OnClickListener()
-		{
-			
+		{		
 			@Override
 			public void onClick(View v)
 			{
@@ -105,23 +214,21 @@ public class PatientID extends Activity
 				//elder=new elder(id, name, age, address, phone, des, im)
 				try
 				{
-				 	elder=new elder(1, "CABLEYANG", 25, "NANJING SEU", "15295508253", "very healthy", null);
-				    elder=elderDAO.findElder(1);
-				    byte []b=elder.getimg();
-				     ageTextView.setText(String.valueOf(elder.getage()));
-				     Log.i("patientid","the elder age is.."+ elder.getage());
-				     nameTextView.setText(elder.getname());
-				     phoneTextView.setText(elder.getphone());
-				     decrpitontTextView.setText(elder.getdescripiton());
-				     Log.i("patientid",elder.getdescripiton());
-			         Bitmap bmimage =BitmapFactory.decodeByteArray(b, 0, b.length);		           
-		            imageView.setImageBitmap(bmimage);
+                  nameString=nameTextView.getText().toString();
+				if (nameString=="")
+				{
+					Toast.makeText(getApplicationContext(), "请输入查询的姓名", Toast.LENGTH_LONG).show();
+				}
+				else {
+				Message msg= new Message();
+				msg.what=3;
+				handler.sendMessage(msg);
+				}
 				} catch (Exception e)
 				{
 					// TODO: handle exception
 				}
 				
-				 
 			}
 		});
  	  /*
@@ -129,36 +236,35 @@ public class PatientID extends Activity
  	   * @para input name,age,tele, description img
  	   *    name age tele decription  img =======>>>>>> sqltite
  	   */
-		twodabaseButton=(Button)findViewById(R.id.todatabase);
-		twodabaseButton.setOnClickListener(new OnClickListener()
+		writedb=(Button)findViewById(R.id.writedb);
+		writedb.setOnClickListener(new OnClickListener()
 		{
 			
 			@Override
 			public void onClick(View v)
 			{
-				  
-				// TODO Auto-generated method stub
+				 
 				try
 				{
-				  // input some ready information	
-				  elder.setname((String) nameTextView.getText());  //装载name
-				  elder.setage(Integer.parseInt((String) ageTextView.getText()));  //读取age
-			      elder.setphone((String) phoneTextView.getText()); //读取电话
-			      elder.setimg(mContent);
-					//elder=new elder(1, "CABLEYANG", 25, "NANJING SEU", "15295508253", "very healthy", mContent);
-			     elderDAO.addelder(elder); 
-			      
+					id=Integer.parseInt(idTextView.getText().toString());
+					nameString=nameTextView.getText().toString();
+					age=Integer.parseInt(ageTextView.getText().toString());
+					phoneString=phoneTextView.getText().toString();
+					address=addressTextView.getText().toString();
+					des=decrpitontTextView.getText().toString();
+		
 				} catch (Exception e)
 				{
 					// TODO: handle exception
-					
 				}
+				// TODO Auto-generated method stub
+				Message msg= new Message();
+				msg.what=2;
+				handler.sendMessage(msg);
 				 	
 			}
 		});
-		
-		 
-     
+ 
 		/*
 		 * 用于返回
 		 */
@@ -288,5 +394,26 @@ public class PatientID extends Activity
 
 	}
   
+	
+	private Bitmap rotateBitmap(Bitmap bm)
+	{
+		int width = bm.getWidth();  
+		int height = bm.getHeight();                  
+		//定义预转换成的图片的宽和高    
+		int newWidth = 160;        
+		int newHight = 220;      
+		//计算缩放率，新尺寸除原尺寸    
+		float scaleWidth = (float)newWidth/width;     
+		float scaleHeight = (float)newHight/height;  
+		//创建操作图片用的matrix对象    
+		Matrix matrix = new Matrix();   
+		//缩放图片动作        
+		matrix.postScale(scaleWidth, scaleHeight);  
+		//旋转图片动作      
+		matrix.postRotate(0);  
+		//创建新的图片        
+	   Bitmap   resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+	   return resizedBitmap;
+	}
 	
 }

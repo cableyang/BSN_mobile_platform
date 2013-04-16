@@ -59,7 +59,11 @@ public class ElderDAO
          {elder.getname(), elder.getage(), elder.getaddress(), elder.getphone(),elder.getdescripiton(),elder.getimg(),elder.getid()});
 	}
 	
-	public elder findElder(int id)
+	
+	/*
+	 * 通过id进行查询
+	 */
+	public elder findElderbyid(int id)
 	{
 		db = helper.getWritableDatabase();
 		Cursor cursor = db.rawQuery("select id,name,age,address,phone,decription,img from "+tablename+"  where id = ?", new String[]
@@ -67,6 +71,20 @@ public class ElderDAO
 		
 		if (cursor.moveToNext())
 		{
+			return new elder(cursor.getInt(cursor.getColumnIndex("id")),cursor.getString(cursor.getColumnIndex("name")), cursor.getInt(cursor.getColumnIndex("age")), cursor.getString(cursor.getColumnIndex("address")),cursor.getString(cursor.getColumnIndex("phone")),cursor.getString(cursor.getColumnIndex("decription")),cursor.getBlob(cursor.getColumnIndex("img")));
+		}
+		return null;
+	}
+	
+	
+	public elder findElderbyname(String name)
+	{
+		db = helper.getWritableDatabase();
+		Cursor cursor = db.rawQuery("select id,name,age,address,phone,decription,img from "+tablename+"  where name = ? ", new String[]
+		{ name});
+		
+		if (cursor.moveToNext())
+		{                                                                                                                                                                                                                           //select id,name,age,address,phone,decription,img
 			return new elder(cursor.getInt(cursor.getColumnIndex("id")),cursor.getString(cursor.getColumnIndex("name")), cursor.getInt(cursor.getColumnIndex("age")), cursor.getString(cursor.getColumnIndex("address")),cursor.getString(cursor.getColumnIndex("phone")),cursor.getString(cursor.getColumnIndex("decription")),cursor.getBlob(cursor.getColumnIndex("img")));
 		}
 		return null;

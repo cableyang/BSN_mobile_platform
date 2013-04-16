@@ -7,81 +7,124 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
+
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="132dp"
-            android:layout_height="135dp"
-            android:background="#ffffff" />
+            android:layout_width="160dp"
+            android:layout_height="210dp"
+            android:background="@drawable/seu"
+             />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#f0f0f0"
             android:orientation="vertical" >
-
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp" >
-
+                android:layout_height="40dp" >      
                 <TextView
                     android:id="@+id/TextView02"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/_"
-                    android:textSize="16dp" />
-
+                    android:textSize="15dp" 
+                    android:textColor="#00fff0"/>
+
                 <EditText
                     android:id="@+id/name"
-                    android:layout_width="122dp"
-                    android:layout_height="36dp"
-                    android:inputType="textPersonName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
                     android:textSize="16dp" />
 
             </LinearLayout>
-
-            <LinearLayout
+            
+            
+             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="37dp" >
-
+                android:layout_height="40dp" >      
                 <TextView
-                    android:id="@+id/TextView01"
+                    android:id="@+id/TextView02"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="0.53"
-                    android:text="@string/age"
-                    android:textSize="16dp" />
-
+                    android:text="ID号："
+                    android:textSize="15dp" 
+                    android:textColor="#00fff0"/>
+
                 <EditText
-                    android:id="@+id/age"
-                    android:layout_width="120dp"
+                    android:id="@+id/id"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.67"
-                    android:inputType="numberDecimal|text"
+                    android:inputType="text"
                     android:textSize="16dp" />
 
-"
             </LinearLayout>
-
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_gravity="right" >
+
+                <TextView
+                    android:id="@+id/TextViewage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/age"
+                    android:textSize="15dp" 
+                    android:textColor="#00fff0"/>
+
+                <EditText
+                    android:id="@+id/age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="16dp" />
+"
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="37dp" >
-
+
                 <TextView
                     android:id="@+id/TextView03"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="联系方式:" />
-
+                    android:text="电话:"
+                    android:textColor="#00fff0" />
+
                 <EditText
                     android:id="@+id/myphone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textSize="16dp" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="37dp" >
+
+                <TextView
+                    android:id="@+id/TextView03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="地址:" 
+                    android:textColor="#00fff0"/>
+
+                <EditText
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="16dp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -90,15 +133,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.70" >
-
         </LinearLayout>
     </LinearLayout>
-
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,27 +155,13 @@
                 android:layout_height="match_parent" >
 
                 <Button
-                    android:id="@+id/camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:text="@string/camera" />
-
-                <Button
                     android:id="@+id/gallery"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/button" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" >
+                    android:layout_width="58dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/imagebutton_background"
+                    android:drawableTop="@drawable/picture"
+                    android:text="@string/gallery"
+                    android:textColor="#ffffffff" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -141,19 +169,53 @@
                     android:orientation="vertical" >
 
                     <Button
-                        android:id="@+id/databasecheck"
-                        android:layout_width="60dp"
+                        android:id="@+id/camera"
+                        android:layout_width="58dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/checkedb" />
+                        android:background="@drawable/imagebutton_background"
+                        android:drawableTop="@drawable/camera"
+                        android:text="@string/camera"
+                        android:textColor="#ffffffff" />
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/remote_register"
+                    android:layout_width="62dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/imagebutton_background"
+                    android:drawableTop="@drawable/internet"
+                    android:text="@string/remote_register"
+                    android:textColor="#ffffffff" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/writedb"
+                android:layout_width="62dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebutton_background"
+                android:drawableTop="@drawable/local"
+                android:text="@string/localrigister"
+                android:textColor="#ffffffff" />
 
             <Button
-                android:id="@+id/todatabase"
-                android:layout_width="49dp"
+                android:id="@+id/databasecheck"
+                android:layout_width="62dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.22"
-                android:text="@string/database" />
+                android:background="@drawable/imagebutton_background"
+                android:drawableTop="@drawable/search"
+                android:text="@string/checkedb"
+                android:textColor="#ffffffff" />
         </LinearLayout>
 
         <TextView
@@ -172,20 +234,29 @@
 
             <requestFocus />
         </EditText>
-
-        <Button
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:background="@drawable/imagebutton_background"
-            android:drawableTop="@drawable/back"
-            android:text="@string/button" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1.38"
         android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/imagebutton_background"
+        android:drawableTop="@drawable/myback"
+        android:text="返回"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
