@@ -2,6 +2,7 @@ package iflab.test;
 
 import iflab.model.elder;
 import iflab.myinterface.ElderDAO;
+import iflab.myinterface.HttpPatientSending;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -42,6 +43,7 @@ public class PatientID extends Activity
 	Button caremabtn,gallerybtn;
 	Button backButton;
 	Button checkButton,writedb;
+	Button remoteButton;
     TextView nameTextView;
     public String nameString;
     TextView idTextView;
@@ -72,7 +74,7 @@ public class PatientID extends Activity
 		imageView = (ImageView) findViewById(R.id.imageView);
 		caremabtn=(Button)findViewById(R.id.camera);
 		gallerybtn=(Button)findViewById(R.id.gallery);
-		
+		remoteButton=(Button)findViewById(R.id.remote_register);
 		
 		elderDAO=new ElderDAO(getBaseContext());
 		elderDAO.creattable();
@@ -93,7 +95,7 @@ public class PatientID extends Activity
 			public void handleMessage(Message msg)
 			{
 				// TODO Auto-generated method stub 
-				
+				//更新数据与handler中
 				nameString=PatientID.this.nameString;
 				phone=PatientID.this.phoneString;
 				age=PatientID.this.age;
@@ -104,10 +106,12 @@ public class PatientID extends Activity
 				switch (msg.what)
 				{
 				case 1:  //运用httppost将信息传递给相关php页面进行远程注册
-					
+						elder=new elder(id, nameString, age,address,  phone, description, mContent);	
+						HttpPatientSending httpPatientSending=new HttpPatientSending(elder);			 
+					    httpPatientSending.httpsending();
 					break;
-				case 2:  //通过sqlite将信息存放在相应表中 实现本地注册
 					
+				case 2:  //通过sqlite将信息存放在相应表中 实现本地注册
 					  // input some ready information	
 					if (mContent==null)
 					{
@@ -128,6 +132,7 @@ public class PatientID extends Activity
 					}
 				   
 					break;
+					
 				case 3:  //通过相关信息进行检索
 					try
 					{
@@ -141,7 +146,7 @@ public class PatientID extends Activity
 					    }
 					    else {
 					    	
-						 byte []b=elder.getimg();
+						 mContent=elder.getimg();
 					     ageTextView.setText(String.valueOf(elder.getage()));
 					     Log.i("patientid","the elder age is.."+ elder.getage());
 					     nameTextView.setText(elder.getname().toString());
@@ -150,7 +155,8 @@ public class PatientID extends Activity
 					     addressTextView.setText(elder.getaddress().toString());
 					     decrpitontTextView.setText(elder.getdescripiton().toString());
 					     Log.i("patientid",elder.getdescripiton().toString());
-				         Bitmap bmimage =BitmapFactory.decodeByteArray(b, 0, b.length);		           
+				         Bitmap bmimage =BitmapFactory.decodeByteArray(mContent, 0, mContent.length);
+				         
 			             imageView.setImageBitmap(rotateBitmap(bmimage));
 			            
 						}
@@ -214,7 +220,7 @@ public class PatientID extends Activity
 				//elder=new elder(id, name, age, address, phone, des, im)
 				try
 				{
-                  nameString=nameTextView.getText().toString();
+					nameString=nameTextView.getText().toString();
 				if (nameString=="")
 				{
 					Toast.makeText(getApplicationContext(), "请输入查询的姓名", Toast.LENGTH_LONG).show();
@@ -234,7 +240,7 @@ public class PatientID extends Activity
  	  /*
  	   * 用于插入新的用户信息
  	   * @para input name,age,tele, description img
- 	   *    name age tele decription  img =======>>>>>> sqltite
+ 	   *    id====name=====age====address======phone=====decription======img=======>>>>>> sqltite
  	   */
 		writedb=(Button)findViewById(R.id.writedb);
 		writedb.setOnClickListener(new OnClickListener()
@@ -242,21 +248,8 @@ public class PatientID extends Activity
 			
 			@Override
 			public void onClick(View v)
-			{
-				 
-				try
-				{
-					id=Integer.parseInt(idTextView.getText().toString());
-					nameString=nameTextView.getText().toString();
-					age=Integer.parseInt(ageTextView.getText().toString());
-					phoneString=phoneTextView.getText().toString();
-					address=addressTextView.getText().toString();
-					des=decrpitontTextView.getText().toString();
-		
-				} catch (Exception e)
-				{
-					// TODO: handle exception
-				}
+			{	 
+				refresh();
 				// TODO Auto-generated method stub
 				Message msg= new Message();
 				msg.what=2;
@@ -265,6 +258,24 @@ public class PatientID extends Activity
 			}
 		});
  
+	/*
+	 * 用于向服务器进行注册
+	 */
+		remoteButton.setOnClickListener(new OnClickListener()
+		{
+        
+			@Override
+			public void onClick(View v)
+			{
+				// TODO Auto-generated method stub
+				
+		    refresh();
+			Message msgMessage=new Message();
+			msgMessage.what=1;
+			handler.sendMessage(msgMessage);		
+			}
+		});
+		
 		/*
 		 * 用于返回
 		 */
@@ -285,6 +296,28 @@ public class PatientID extends Activity
 
 	}
 
+	
+	/*
+	 * 用于更新输入的text信息
+	 */
+	public void refresh()
+	{
+		try
+		{
+			id=Integer.parseInt(idTextView.getText().toString());
+			nameString=nameTextView.getText().toString();
+			age=Integer.parseInt(ageTextView.getText().toString());
+			phoneString=phoneTextView.getText().toString();
+			address=addressTextView.getText().toString();
+			des=decrpitontTextView.getText().toString();
+
+		} catch (Exception e)
+		{
+			// TODO: handle exception
+		}
+	}
+	
+	
 	@ Override
 	protected void onActivityResult ( int requestCode , int resultCode , Intent data )
 	{
@@ -319,9 +352,9 @@ public class PatientID extends Activity
 				//旋转图片动作      
 				matrix.postRotate(90);  
 				//创建新的图片        
-				  resizedBitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
-			 
+			    resizedBitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
 				imageView.setImageBitmap(resizedBitmap);
+				
 			} catch ( Exception e )
 			{
 				System.out.println(e.getMessage());
