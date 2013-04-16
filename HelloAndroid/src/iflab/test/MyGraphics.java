@@ -27,7 +27,8 @@ import android.view.View;
 public class MyGraphics extends View implements Runnable{	//自定义View
 	final int plotwidth=300;  //定义显示区域长度
 	GraphicsData graphicsData;
-	private Paint paint=null;	
+	private Paint paint=null;
+	//QRS qrs;
 	//声明画笔对象
 	static int a=0;
 	public MyGraphics(Context context, int rate, GraphicsData pointGraphicsData) {
@@ -67,7 +68,21 @@ public class MyGraphics extends View implements Runnable{	//自定义View
 		paint.setStrokeWidth((float) 4.0);				//线宽
 		paint.setStyle(Style.STROKE);
 		Path path = new Path();						//Path对象
-		//数据读入
+		
+		
+		/*
+		 * LP-HP-descision tree方法
+		 */
+		try
+		{
+		//	qrs=new QRS(graphicsData.data);
+		  //  graphicsData.data=qrs.filter(); 
+		} catch (Exception e)
+		{
+			// TODO: handle exception
+		}
+		
+      //数据读入		
 		int max=(int) findmax(graphicsData.data, graphicsData.rate);
 		//path.moveTo(0, (float) graphicsData.data[0]);						//起始点
 		for(int i=0; i<1000; i++)
@@ -130,5 +145,12 @@ public class MyGraphics extends View implements Runnable{	//自定义View
 			Log.i("HELLO", msg);
 			postInvalidate();						//更新界面
 		}
+	}
+	
+	public int QRSalgorithm()
+	{
+		int qrs = 0;
+
+		return qrs;
 	}
 }

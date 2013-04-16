@@ -134,7 +134,6 @@ public class firstActivity extends Activity
 		 accdataZ.adddata(0);
 		}
      
-        
         //UI部分初始化
 	    bindButton =(Button)findViewById(R.id.Bind);
 	    bindButton.setOnClickListener(listener);
@@ -196,18 +195,7 @@ public class firstActivity extends Activity
 	     httpECGservice= new HttpECGservice(ecg, graphicsECGData);
 	         
 	     httpECGservice.StartThread();
-         //httpECGservice.StartSending(graphicsECGData);
-		
-	     /*
-	      * 后台进行数据传输
-	      */
-	    // doBindService();	 
-   
-	    
-      /*
-       * using time method to deal with data on the bluestream
-       * @msg.what=2 is the most import method of that
-       */
+       
 	    drhandler = new Handler() 
 		{
                
@@ -294,12 +282,7 @@ public class firstActivity extends Activity
 			@Override
 			public void onServiceConnected(ComponentName name,IBinder service)
 			{
-				// TODO Auto-generated method stub
-				 // This is called when the connection with the service has been
- 	        // established, giving us the service object we can use to
- 	        // interact with the service.  Because we have bound to a explicit
- 	        // service that we know is running in our own process, we can
- 	        // cast its IBinder to a concrete class and directly access it.
+				 
  	    	mBindService = ((HttpBindService.LocalBinder)service).getService();
  	        // Tell the user about this for our demo.
  	    	mIsBound=true;
@@ -308,11 +291,7 @@ public class firstActivity extends Activity
 			@Override
 			public void onServiceDisconnected(ComponentName name)
 			{
-		     // TODO Auto-generated method stub
-		     // This is called when the connection with the service has been
- 	        // unexpectedly disconnected -- that is, its process crashed.
- 	        // Because it is running in our same process, we should never
- 	        // see this happen.
+		   
 			mIsBound=false;
  	        mBindService = null;   
 			}
@@ -483,12 +462,13 @@ public class firstActivity extends Activity
             		//blueoutOutputStream=_socket.getOutputStream();//得到蓝牙输出数据
             		Toast.makeText(this, "绑定数据流成功", Toast.LENGTH_SHORT).show();
             		}catch(IOException e){
-            			//Toast.makeText(this, "接收数据失败！", Toast.LENGTH_SHORT).show();
+            			Toast.makeText(this, "接收数据失败！", Toast.LENGTH_SHORT).show();
             			return;
             		}
+            		
+            		
             		if(bThread==false){
-                        
-            			
+			
             //================当建立连接后进行初始化=================//
             //=====================================================//
             			timercount=0;

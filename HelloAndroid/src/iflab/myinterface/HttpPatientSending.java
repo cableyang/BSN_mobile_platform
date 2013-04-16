@@ -49,7 +49,7 @@ public class HttpPatientSending
              }
              String imgString=buff.toString();
                */
-			  String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+			 String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 			 nameValuePairs.add(new BasicNameValuePair("img",encodedImage));
 			 
 			 HttpClient httpclient = new DefaultHttpClient();

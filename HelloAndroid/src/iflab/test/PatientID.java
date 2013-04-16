@@ -11,6 +11,7 @@ import org.w3c.dom.Text;
 
 import android.R.integer;
 import android.R.string;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class PatientID extends Activity
 	ElderDAO elderDAO;
 	elder elder;
 	
+	@SuppressLint("NewApi")
 	@ Override
 	public void onCreate ( Bundle savedInstanceState )
 	{
@@ -91,6 +93,7 @@ public class PatientID extends Activity
             String address;
             int id;
             
+			@SuppressLint({ "NewApi", "NewApi" })
 			@Override
 			public void handleMessage(Message msg)
 			{
@@ -155,7 +158,8 @@ public class PatientID extends Activity
 					     addressTextView.setText(elder.getaddress().toString());
 					     decrpitontTextView.setText(elder.getdescripiton().toString());
 					     Log.i("patientid",elder.getdescripiton().toString());
-				         Bitmap bmimage =BitmapFactory.decodeByteArray(mContent, 0, mContent.length);
+				        
+					     Bitmap bmimage =BitmapFactory.decodeByteArray(mContent, 0, mContent.length);
 				         
 			             imageView.setImageBitmap(rotateBitmap(bmimage));
 			            
@@ -336,6 +340,9 @@ public class PatientID extends Activity
 				mContent = readStream(resolver.openInputStream(Uri.parse(originalUri.toString())));
 				// 将字节数组转换为ImageView可调用的Bitmap对象
 				myBitmap = getPicFromBytes(mContent, null);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+				mContent = baos.toByteArray();
 				// //把得到的图片绑定在控件上显示
 				int width = myBitmap.getWidth();  
 				int height = myBitmap.getHeight();                  
@@ -368,7 +375,7 @@ public class PatientID extends Activity
 				Bundle extras = data.getExtras();
 				myBitmap = (Bitmap) extras.get("data");
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				myBitmap.compress(Bitmap.CompressFormat.JPEG, 1, baos);
+				myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 				mContent = baos.toByteArray();
 			} catch ( Exception e )
 			{
