@@ -3,6 +3,7 @@ package iflab.test;
 import iflab.model.ECG;
 import iflab.myinterface.EcgDAO;
 import iflab.myinterface.ElderDAO;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Timer;
@@ -198,7 +199,8 @@ public class firstActivity extends Activity
        
 	    drhandler = new Handler() 
 		{
-               
+             String printString="";
+	    	String[] readarray=new String[1024];
 			@Override
         	public void handleMessage(Message msg) 
         	{
@@ -217,11 +219,30 @@ public class firstActivity extends Activity
 				    byte []bytes=new byte[1024];
 					Log.i("BUFFER IS", "firstmessage is "+firstmessage);	
 					num = blueStream.read(bytes);
-					if (httpstart)
-					{
-						httpECGservice.StartSending(graphicsECGData);
-					}
-					
+					 	
+					   // byte []bytes=new byte[102400];
+					    
+				 	  try
+						{
+					    num = blueStream.read(bytes);
+							
+						 
+						
+						for(int i = 0 ; i < num; i++)
+						{ 		  
+						//readMessage[i]=String.format("%2x", bytes[i-count]);	
+							readarray[i]=Integer.toHexString(bytes[i]&0xff);
+							
+						}
+					 
+						for(int i = 0 ; i < num; i++)
+						{ 		  
+							printString+=readarray[i];
+						 	
+						}
+						
+						Log.i("read",printString);
+						printString="";
 					readMessage = new String(bytes, 0, num);
 					Log.i("deal with things", "begin");
 					graphicsECGData.dealwithstring(readMessage);
@@ -234,7 +255,11 @@ public class firstActivity extends Activity
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					 
+					} catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 		        	break;	 
         		 }
         		 
