@@ -5,7 +5,7 @@ import java.sql.Time;
 
 
 /*
- * the ecg table`s format is 
+ * the ecg table`s format is 11
  * id====name====date====time====ecg=====bpm===
  */
 public class ECG

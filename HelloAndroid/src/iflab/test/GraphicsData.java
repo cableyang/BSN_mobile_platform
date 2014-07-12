@@ -18,7 +18,6 @@ public class GraphicsData
 	/*
 	 * 定义采样频率，默认为2即500HZ的采样频率
 	 */
-	
     public static final int RATE250 = 250;
 	public static final int RATE500 = 500;
 	public static final int RATE1000 = 1000;
